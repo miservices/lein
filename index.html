@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEIN — Dashboard</title>
+<link rel="stylesheet" href="/assets/css/base.css">
+</head>
+<body data-page="dashboard">
+
+<div id="auth-screen"><!-- injected by auth.js --></div>
+
+<div class="shell">
+  <div id="app-topbar"><!-- injected by nav.js --></div>
+
+  <div class="quickgrid">
+    <a class="quickcard" href="/calls/active.html">
+      <div class="qtitle">911 calls</div>
+      <div class="qdesc">Create, assign units, set priority</div>
+    </a>
+    <a class="quickcard" href="/lookup/person.html">
+      <div class="qtitle">Person / vehicle lookup</div>
+      <div class="qdesc">History, warrants, licenses</div>
+    </a>
+    <a class="quickcard" href="/reports/incident/new.html">
+      <div class="qtitle">Incident reports</div>
+      <div class="qdesc">Write and submit a report</div>
+    </a>
+    <a class="quickcard" href="/citations/new.html">
+      <div class="qtitle">Citations</div>
+      <div class="qdesc">Write and submit a citation</div>
+    </a>
+    <a class="quickcard" href="/bolo/new.html">
+      <div class="qtitle">BOLO alerts</div>
+      <div class="qdesc">Broadcast to active units</div>
+    </a>
+    <a class="quickcard" href="/records/index.html">
+      <div class="qtitle">Legal records</div>
+      <div class="qdesc">Custody, court, probation, notes</div>
+    </a>
+    <a class="quickcard" href="/units/roster.html">
+      <div class="qtitle">Unit roster</div>
+      <div class="qdesc">See who's active right now</div>
+    </a>
+    <a class="quickcard" href="/records/index.html">
+      <div class="qtitle">Record flags</div>
+      <div class="qdesc">Warrant hits and alerts</div>
+    </a>
+  </div>
+
+  <div class="cols">
+    <div class="panel">
+      <div class="panel-head">
+        Active calls <a class="see-all" href="/calls/active.html">See all</a>
+      </div>
+      <table>
+        <thead><tr><th>Code</th><th>Call title</th><th>Address</th><th>Units</th><th>Status</th></tr></thead>
+        <tbody id="calls-body"></tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        Units on duty <a class="see-all" href="/units/roster.html">See all</a>
+      </div>
+      <table>
+        <thead><tr><th>Unit</th><th>Name</th><th>Agency</th><th>Rank</th><th>Status</th></tr></thead>
+        <tbody id="units-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="panel">
+      <div class="panel-head">
+        Emergency calls <a class="see-all" href="/calls/active.html">See all</a>
+      </div>
+      <table>
+        <thead><tr><th>Type</th><th>Caller</th><th>Location</th><th>Description</th></tr></thead>
+        <tbody id="emergency-body"></tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">Active groups</div>
+      <table>
+        <thead><tr><th>Group</th><th>Agency</th><th>Status</th></tr></thead>
+        <tbody id="groups-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      Record flags <span class="count" id="flags-count" style="display:none;">0</span>
+      <span class="muted">Real warrant / stolen-property hits appear first</span>
+    </div>
+    <table>
+      <thead><tr><th>Type</th><th>Subject</th><th>Location</th><th>Description</th><th>Status</th></tr></thead>
+      <tbody id="flags-body"></tbody>
+    </table>
+  </div>
+
+  <div id="app-bottombar"><!-- injected by nav.js --></div>
+</div>
+
+<script type="module" src="/assets/js/dashboard.js"></script>
+</body>
+</html>
