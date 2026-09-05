@@ -5,12 +5,11 @@
 // once a unit is confirmed. Any page can listen for that event.
 import { db } from "./firebase-config.js";
 import {
-  collection, addDoc, getDocs, query, orderBy, serverTimestamp, doc, getDoc
+  collection, addDoc, getDocs, query, orderBy, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
-import { DEPARTMENTS } from "./mock-data.js";
+import { DEPARTMENT_LIST, RANKS, resolveDepartment } from "./util.js";
 
 const STORAGE_KEY = "lein_active_unit";
-const RANKS = ["Cadet", "Officer", "Corporal", "Sergeant", "Lieutenant", "Captain", "Deputy", "Trooper", "Dispatcher", "Paramedic", "Engineer"];
 
 function proceed(unit) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(unit));
@@ -31,6 +30,7 @@ async function fetchExistingUnits() {
 }
 
 function renderMiniLogin(container, saved) {
+  const dept = resolveDepartment(saved.department);
   container.innerHTML = `
     <div class="auth-card">
       <div class="auth-head">
@@ -43,7 +43,7 @@ function renderMiniLogin(container, saved) {
           <span class="badge" style="background:var(--blue)">${saved.unitNumber}</span>
           <div class="who">
             <div class="n">${saved.name}</div>
-            <div class="d">${saved.department} &middot; ${saved.rank}</div>
+            <div class="d">${dept.name} &middot; ${saved.rank}</div>
           </div>
         </div>
         <button id="login-btn" style="width:100%;">Log in as ${saved.unitNumber}</button>
@@ -90,14 +90,17 @@ async function renderFullGate(container) {
       list.innerHTML = `<div style="color:var(--text-dim); font-size:12.5px; padding: 8px;">No units created yet. Switch to "Create unit" to make the first one.</div>`;
       return;
     }
-    list.innerHTML = units.map(u => `
+    list.innerHTML = units.map(u => {
+      const dept = resolveDepartment(u.department);
+      return `
       <div class="unit-option" data-id="${u.id}">
         <span class="badge" style="background:var(--blue)">${u.unitNumber}</span>
         <div class="who">
           <div class="n">${u.name}</div>
-          <div class="d">${u.department} &middot; ${u.rank}</div>
+          <div class="d">${dept.name} &middot; ${u.rank}</div>
         </div>
-      </div>`).join("");
+      </div>`;
+    }).join("");
     list.querySelectorAll(".unit-option").forEach(opt => {
       opt.addEventListener("click", () => {
         const unit = units.find(u => u.id === opt.dataset.id);
@@ -121,24 +124,26 @@ async function renderFullGate(container) {
       <div class="auth-row2">
         <div class="field">
           <label>Agency</label>
-          <select id="f-dept">${DEPARTMENTS.map(d => `<option value="${d}">${d}</option>`).join("")}</select>
+          <input id="f-dept" list="dept-options" placeholder="Choose or type your own" />
+          <datalist id="dept-options">${DEPARTMENT_LIST.map(d => `<option value="${d.name}">`).join("")}</datalist>
         </div>
         <div class="field">
           <label>Rank</label>
-          <select id="f-rank">${RANKS.map(r => `<option value="${r}">${r}</option>`).join("")}</select>
+          <input id="f-rank" list="rank-options" placeholder="Choose or type your own" />
+          <datalist id="rank-options">${RANKS.map(r => `<option value="${r}">`).join("")}</datalist>
         </div>
       </div>
       <button id="create-btn" style="width:100%;">Create unit and log in</button>
-      <div class="auth-error" id="create-error">Enter a unit number and name.</div>`;
+      <div class="auth-error" id="create-error">Enter a unit number, name, agency, and rank.</div>`;
 
     document.getElementById("create-btn").addEventListener("click", async () => {
       const unitNumber = document.getElementById("f-unit").value.trim();
       const name = document.getElementById("f-name").value.trim();
-      const department = document.getElementById("f-dept").value;
-      const rank = document.getElementById("f-rank").value;
+      const department = document.getElementById("f-dept").value.trim();
+      const rank = document.getElementById("f-rank").value.trim();
       const errEl = document.getElementById("create-error");
 
-      if (!unitNumber || !name) {
+      if (!unitNumber || !name || !department || !rank) {
         errEl.classList.add("show");
         return;
       }
@@ -150,7 +155,7 @@ async function renderFullGate(container) {
 
       try {
         const docRef = await addDoc(collection(db, "units"), {
-          unitNumber, name, department, rank, status: "active", isMock: false, createdAt: serverTimestamp()
+          unitNumber, name, department, rank, status: "active", isMock: false, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
         });
         proceed({ id: docRef.id, unitNumber, name, department, rank, status: "active", isMock: false });
       } catch (err) {

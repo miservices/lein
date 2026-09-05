@@ -124,14 +124,19 @@ thead th{
 }
 tbody td{
   padding: 8px 12px; border-bottom: 1px solid var(--line);
-  color: var(--text); font-size:12.5px;
+  color: var(--text-dim); font-size:12.5px;
 }
 tbody tr:nth-child(odd){ background: var(--row-alt); }
 tbody tr:nth-child(even){ background: var(--row); }
 tbody tr:hover td{ background: rgba(63,140,255,0.07); }
-td.dim{ color: var(--text-dim); }
+tbody tr.clickable{ cursor:pointer; }
+td.dim{ color: var(--text-faint); }
 td.trunc{ max-width: 260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .empty-row td{ text-align:center; color: var(--text-faint); padding: 18px; }
+/* Real and mock rows read identically on purpose — the source shouldn't
+   change how legible a row is. Use td.strong where a value (like a name
+   or case id) should stand out regardless of mock/real status. */
+td.strong{ color: var(--text); font-weight:600; }
 
 .badge{
   display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:0.03em;
@@ -151,11 +156,7 @@ tr.flag-hit td:first-child{ position:relative; }
 tr.flag-hit td:first-child::before{
   content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background: var(--alert);
 }
-.mock-tag{
-  font-size:9.5px; color: var(--text-faint); border: 1px solid var(--line);
-  border-radius: 3px; padding: 1px 5px; margin-left: 6px; text-transform:uppercase; letter-spacing:0.04em;
-}
-tr.is-mock td{ color: var(--text-dim); }
+
 
 /* ===================== layout helpers ===================== */
 .cols{ display:grid; grid-template-columns: 1.5fr 1fr; gap: 10px; }
@@ -236,3 +237,123 @@ label{ display:block; font-size: 11px; color: var(--text-dim); letter-spacing: 0
   font-size: 11.5px; color: var(--text-faint); background: var(--panel-head);
   border: 1px solid var(--line); border-radius: var(--radius); padding: 7px 12px; margin-bottom: 10px;
 }
+
+/* =========================================================
+   Shared components for the section pages (Calls, Lookup,
+   Reports, Citations, BOLO, Records, Units). Added alongside
+   the original dashboard styles above — nothing above this
+   line changed in meaning, just extended.
+   ========================================================= */
+
+/* ---- page head / search bar ---- */
+.page-head{ display:flex; align-items:center; gap:12px; margin-bottom: 12px; flex-wrap:wrap; }
+.page-head h1{ font-size:17px; margin:0; }
+.page-head .sub{ font-size:12px; color: var(--text-dim); }
+.page-head .spacer{ flex:1; }
+.search-bar{ display:flex; gap:8px; margin-bottom: 12px; }
+.search-bar input{ flex:1; }
+.search-bar .btn{ white-space:nowrap; }
+
+/* ---- tabs ---- */
+.tabbar{ display:flex; gap:4px; border-bottom: 1px solid var(--line); margin-bottom: 12px; flex-wrap:wrap; }
+.tabbar button{
+  background:transparent; border:none; color: var(--text-dim); font-weight:600; font-size:12.5px;
+  padding: 9px 14px; border-radius: 5px 5px 0 0; cursor:pointer; border-bottom: 2px solid transparent;
+}
+.tabbar button.active{ color: var(--text); border-bottom-color: var(--blue); }
+.tabbar button:hover{ color: var(--text); }
+.tabbar .tab-count{
+  background: var(--line); color: var(--text-dim); font-size:10px; font-weight:700;
+  border-radius: 8px; padding: 1px 6px; margin-left:6px;
+}
+
+/* ---- back link / breadcrumb ---- */
+.back-link{ display:inline-flex; align-items:center; gap:6px; color: var(--blue); font-size:12.5px; font-weight:600; margin-bottom: 10px; cursor:pointer; }
+.back-link:hover{ text-decoration: underline; }
+
+/* ---- detail header (person/vehicle/call/report profile) ---- */
+.detail-head{
+  display:flex; align-items:flex-start; gap:14px; background: var(--panel); border:1px solid var(--line);
+  border-radius: var(--radius); padding: 16px; margin-bottom: 12px; flex-wrap:wrap;
+}
+.detail-head .avatar{
+  width:46px; height:46px; border-radius:8px; background: var(--blue); color:#fff; font-weight:700;
+  display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;
+}
+.detail-head .who{ flex:1; min-width:220px; }
+.detail-head .who .title{ font-size:16px; font-weight:700; margin-bottom:2px; }
+.detail-head .who .meta{ font-size:12px; color: var(--text-dim); }
+.detail-head .case-id{ font-size:11px; color: var(--text-faint); font-family: monospace; }
+.detail-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+
+/* ---- key/value grid for profile facts ---- */
+.kv-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding: 14px; }
+.kv-grid .kv{ display:flex; flex-direction:column; gap:3px; }
+.kv-grid .kv .k{ font-size:10px; color: var(--text-faint); text-transform:uppercase; letter-spacing:0.04em; }
+.kv-grid .kv .v{ font-size:13px; color: var(--text); font-weight:600; }
+.kv-grid .kv .v.dim{ color: var(--text-dim); font-weight:500; }
+
+/* ---- quick action buttons on a profile ---- */
+.quick-actions{ display:flex; flex-wrap:wrap; gap:8px; padding: 0 14px 14px; }
+.quick-actions button{ font-size:12px; padding: 7px 12px; }
+
+/* ---- linked entity chips (person <-> vehicle, report <-> citation, etc.) ---- */
+.chip-row{ display:flex; flex-wrap:wrap; gap:6px; padding: 0 14px 14px; }
+.chip{
+  display:inline-flex; align-items:center; gap:6px; background: #0e1622; border:1px solid var(--line);
+  border-radius: 20px; padding: 5px 12px; font-size:12px; color: var(--text); cursor:pointer;
+}
+.chip:hover{ border-color: var(--blue); }
+.chip .chip-type{ color: var(--text-faint); font-size:10px; text-transform:uppercase; }
+.chip-add{ border-style:dashed; color: var(--text-dim); }
+
+/* ---- history / timeline list (a person's reports, citations, records) ---- */
+.timeline{ display:flex; flex-direction:column; }
+.timeline-item{
+  display:flex; gap:12px; padding: 11px 14px; border-bottom:1px solid var(--line); cursor:pointer;
+}
+.timeline-item:hover{ background: rgba(63,140,255,0.07); }
+.timeline-item:last-child{ border-bottom:none; }
+.timeline-item .t-badge{ flex-shrink:0; }
+.timeline-item .t-body{ flex:1; min-width:0; }
+.timeline-item .t-title{ font-size:12.5px; font-weight:600; color: var(--text); }
+.timeline-item .t-desc{ font-size:11.5px; color: var(--text-dim); margin-top:2px; }
+.timeline-item .t-when{ font-size:10.5px; color: var(--text-faint); white-space:nowrap; }
+
+/* ---- record-type badges (warrant, court order, probation, etc.) ---- */
+.rtype{
+  display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:0.03em; text-transform:uppercase;
+  padding: 3px 9px; border-radius: 4px; color:#fff;
+}
+.rtype.warrant{ background: var(--alert); }
+.rtype.stolenVehicle{ background: var(--alert); }
+.rtype.courtOrder{ background: #b9873f; color:#241d08; }
+.rtype.suspension{ background: var(--pending); color: var(--pending-text); }
+.rtype.revocation{ background: var(--pending); color: var(--pending-text); }
+.rtype.probation{ background: var(--info); color: var(--info-text); }
+.rtype.parole{ background: var(--info); color: var(--info-text); }
+.rtype.license{ background: var(--active); color: var(--active-text); }
+
+/* ---- forms: multi-column layout for report/citation/record entry ---- */
+.form-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 0 16px; padding: 16px; }
+.form-grid .field.full{ grid-column: 1 / -1; }
+@media (max-width: 800px){ .form-grid{ grid-template-columns: 1fr; } }
+.form-actions{ display:flex; gap:10px; justify-content:flex-end; padding: 0 16px 16px; }
+.type-picker{ display:flex; gap:8px; flex-wrap:wrap; padding: 14px 16px 0; }
+.type-picker button{ background: transparent; border:1px solid var(--line); color: var(--text-dim); }
+.type-picker button.active{ background: rgba(63,140,255,0.16); border-color: var(--blue); color: var(--text); }
+
+/* ---- inline banners (autosave confirms, seed status, etc.) ---- */
+.banner{
+  font-size:12px; padding: 9px 12px; border-radius: var(--radius); margin-bottom: 10px;
+  border:1px solid var(--line); background: var(--panel-head); color: var(--text-dim);
+}
+.banner.success{ border-color: rgba(79,174,92,0.4); color: var(--active); }
+.banner.warn{ border-color: rgba(201,82,79,0.4); color: var(--alert); }
+
+/* ---- prefill suggestion box (lookup match while filling a report) ---- */
+.prefill-box{
+  border:1px solid var(--blue); background: rgba(63,140,255,0.08); border-radius: var(--radius);
+  padding: 10px 12px; margin: 0 16px 14px; font-size:12px; display:flex; align-items:center; gap:10px;
+}
+.prefill-box .spacer{ flex:1; }
