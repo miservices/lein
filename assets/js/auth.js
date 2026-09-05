@@ -29,35 +29,7 @@ async function fetchExistingUnits() {
   }
 }
 
-function renderMiniLogin(container, saved) {
-  const dept = resolveDepartment(saved.department);
-  container.innerHTML = `
-    <div class="auth-card">
-      <div class="auth-head">
-        <div class="mark">L</div>
-        <h1>Welcome back</h1>
-        <div class="sub">Flint LEIN Terminal</div>
-      </div>
-      <div class="auth-body">
-        <div class="unit-option" style="margin-bottom:16px;">
-          <span class="badge" style="background:var(--blue)">${saved.unitNumber}</span>
-          <div class="who">
-            <div class="n">${saved.name}</div>
-            <div class="d">${dept.name} &middot; ${saved.rank}</div>
-          </div>
-        </div>
-        <button id="login-btn" style="width:100%;">Log in as ${saved.unitNumber}</button>
-        <div class="auth-switch"><a id="switch-link" href="#">Not you? Choose a different unit</a></div>
-      </div>
-    </div>`;
 
-  document.getElementById("login-btn").addEventListener("click", () => proceed(saved));
-  document.getElementById("switch-link").addEventListener("click", e => {
-    e.preventDefault();
-    localStorage.removeItem(STORAGE_KEY);
-    renderFullGate(container);
-  });
-}
 
 async function renderFullGate(container) {
   container.innerHTML = `
@@ -175,8 +147,13 @@ export function initAuth() {
   if (!container) return;
   const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
   if (saved) {
-    renderMiniLogin(container, saved);
+    // Already signed in on this browser. The overlay starts hidden by
+    // default in the HTML (see the "hidden" class on #auth-screen), so
+    // there's nothing to show or hide here — just resume the session.
+    // Switching units is still one click away via "Switch" in the topbar.
+    document.dispatchEvent(new CustomEvent("lein-auth-ready", { detail: saved }));
   } else {
+    container.classList.remove("hidden");
     renderFullGate(container);
   }
 }
