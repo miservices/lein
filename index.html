@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,11 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LEIN — Dashboard</title>
 <!--
-  Every path in this app ("assets/js/...", "calls/active.html", etc.) is
-  written WITHOUT a leading slash, so it resolves relative to this <base>
-  tag no matter how deep a page is nested. If this site is ever moved to a
-  different folder (or to the domain root), this is the ONLY line that
-  needs to change — update it to match, e.g. base href="/" for root.
+  Every path in this app is written WITHOUT a leading slash, so it
+  resolves relative to this <base> tag no matter how deep a page is
+  nested. If this site is ever moved to a different folder (or to the
+  domain root), this is the ONLY line that needs to change.
 -->
 <base href="/lein/">
 <link rel="stylesheet" href="assets/css/base.css">
@@ -23,73 +23,71 @@
   <div id="app-topbar"><!-- injected by nav.js --></div>
 
   <div class="quickgrid">
-    <a class="quickcard" href="calls/active.html">
-      <div class="qtitle">911 calls</div>
-      <div class="qdesc">Create, assign units, set priority</div>
+    <a class="quickcard" href="calls/">
+      <div class="qtitle">Calls</div>
+      <div class="qdesc">Calls for service, field activities, join a unit</div>
     </a>
-    <a class="quickcard" href="lookup/person.html">
+    <a class="quickcard" href="lookup/">
       <div class="qtitle">Person / vehicle lookup</div>
       <div class="qdesc">History, warrants, licenses</div>
     </a>
-    <a class="quickcard" href="reports/incident/new.html">
-      <div class="qtitle">Incident reports</div>
-      <div class="qdesc">Write and submit a report</div>
+    <a class="quickcard" href="reports/">
+      <div class="qtitle">Reports</div>
+      <div class="qdesc">Incident, accident, arrest, written warning</div>
     </a>
-    <a class="quickcard" href="citations/new.html">
+    <a class="quickcard" href="citations/">
       <div class="qtitle">Citations</div>
-      <div class="qdesc">Write and submit a citation</div>
+      <div class="qdesc">Write a citation, track court disposition</div>
     </a>
-    <a class="quickcard" href="bolo/new.html">
+    <a class="quickcard" href="bolo/">
       <div class="qtitle">BOLO alerts</div>
       <div class="qdesc">Broadcast to active units</div>
     </a>
-    <a class="quickcard" href="records/index.html">
-      <div class="qtitle">Legal records</div>
-      <div class="qdesc">Custody, court, probation, notes</div>
+    <a class="quickcard" href="records/">
+      <div class="qtitle">Records</div>
+      <div class="qdesc">Warrants, court orders, probation, licenses</div>
     </a>
-    <a class="quickcard" href="units/roster.html">
-      <div class="qtitle">Unit roster</div>
+    <a class="quickcard" href="units/">
+      <div class="qtitle">Units</div>
       <div class="qdesc">See who's active right now</div>
     </a>
-    <a class="quickcard" href="records/index.html">
+    <a class="quickcard" href="records/#flags">
       <div class="qtitle">Record flags</div>
       <div class="qdesc">Warrant hits and alerts</div>
     </a>
   </div>
 
-  <div class="cols">
-    <div class="panel">
-      <div class="panel-head">
-        Active calls <a class="see-all" href="calls/active.html">See all</a>
-      </div>
-      <table>
-        <thead><tr><th>Code</th><th>Call title</th><th>Address</th><th>Units</th><th>Status</th></tr></thead>
-        <tbody id="calls-body"></tbody>
-      </table>
+  <div class="panel">
+    <div class="panel-head">
+      Units on duty <a class="see-all" href="units/">See all</a>
     </div>
+    <table>
+      <thead><tr><th>Unit</th><th>Name</th><th>Agency</th><th>Rank</th><th>Status</th></tr></thead>
+      <tbody id="units-body"></tbody>
+    </table>
+  </div>
 
-    <div class="panel">
-      <div class="panel-head">
-        Units on duty <a class="see-all" href="units/roster.html">See all</a>
-      </div>
-      <table>
-        <thead><tr><th>Unit</th><th>Name</th><th>Agency</th><th>Rank</th><th>Status</th></tr></thead>
-        <tbody id="units-body"></tbody>
-      </table>
+  <div class="panel">
+    <div class="panel-head">
+      Emergency calls <span class="muted">Calls for service</span> <a class="see-all" href="calls/">See all</a>
     </div>
+    <table>
+      <thead><tr><th>Type</th><th>Caller</th><th>Call title</th><th>Address</th><th>Status</th></tr></thead>
+      <tbody id="emergency-body"></tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      Field activities <span class="muted">Self-initiated — traffic stops, patrol, etc.</span> <a class="see-all" href="calls/#field">See all</a>
+    </div>
+    <table>
+      <thead><tr><th>Code</th><th>Activity</th><th>Address</th><th>Units</th><th>Status</th></tr></thead>
+      <tbody id="field-body"></tbody>
+    </table>
   </div>
 
   <div class="cols">
-    <div class="panel">
-      <div class="panel-head">
-        Emergency calls <a class="see-all" href="calls/active.html">See all</a>
-      </div>
-      <table>
-        <thead><tr><th>Type</th><th>Caller</th><th>Location</th><th>Description</th></tr></thead>
-        <tbody id="emergency-body"></tbody>
-      </table>
-    </div>
-
     <div class="panel">
       <div class="panel-head">Active groups</div>
       <table>
@@ -97,17 +95,17 @@
         <tbody id="groups-body"></tbody>
       </table>
     </div>
-  </div>
 
-  <div class="panel">
-    <div class="panel-head">
-      Record flags <span class="count" id="flags-count" style="display:none;">0</span>
-      <span class="muted">Real warrant / stolen-property hits appear first</span>
+    <div class="panel">
+      <div class="panel-head">
+        Record flags <span class="count" id="flags-count" style="display:none;">0</span>
+        <span class="muted">Warrants, stolen vehicles, court orders, suspensions</span>
+      </div>
+      <table>
+        <thead><tr><th>Type</th><th>Subject</th><th>Detail</th><th>Age</th><th>Status</th></tr></thead>
+        <tbody id="flags-body"></tbody>
+      </table>
     </div>
-    <table>
-      <thead><tr><th>Type</th><th>Subject</th><th>Location</th><th>Description</th><th>Status</th></tr></thead>
-      <tbody id="flags-body"></tbody>
-    </table>
   </div>
 
   <div id="app-bottombar"><!-- injected by nav.js --></div>
