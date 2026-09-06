@@ -5,7 +5,7 @@ import {
   linkPersonVehicle, getPersonHistory, getVehicleHistory, isFlagWorthy
 } from "../data-service.js";
 import { renderPersonPicker, renderVehiclePicker, personLabel, vehicleLabel } from "../link-picker.js";
-import { esc, fmtAge, fmtDate, initialsBadge } from "../util.js";
+import { esc, fmtAge, initialsBadge, US_STATES, DEFAULT_CITY, DEFAULT_STATE, DEFAULT_ZIP, FLINT_ZIPS } from "../util.js";
 import { currentHash, onHashChange, goTo, setPrefill } from "../router.js";
 
 injectNav("lookup");
@@ -43,7 +43,7 @@ function renderList(tab) {
     <div class="panel"><table>
       <thead>${tab === "person"
         ? "<tr><th>Name</th><th>DOB</th><th>License</th><th>Address</th><th>Times stopped</th></tr>"
-        : "<tr><th>Plate</th><th>Vehicle</th><th>Registration</th><th>Insurance</th><th>Stolen</th></tr>"}</thead>
+        : "<tr><th>Plate</th><th>State</th><th>Vehicle</th><th>Registration</th><th>Stolen</th></tr>"}</thead>
       <tbody id="list-body"></tbody>
     </table></div>`;
 
@@ -74,10 +74,10 @@ function renderRows(tab, term) {
     if (!rows.length) { body.innerHTML = `<tr class="empty-row"><td colspan="5">No vehicles match.</td></tr>`; return; }
     body.innerHTML = rows.map(v => `
       <tr class="clickable" data-id="${v.id}">
-        <td class="strong">${esc(v.plate)}</td>
+        <td class="strong mono">${esc(v.plate)}</td>
+        <td class="dim">${esc(v.state || "—")}</td>
         <td class="dim">${esc(v.year || "")} ${esc(v.color || "")} ${esc(v.make || "")} ${esc(v.model || "")}</td>
         <td>${statusPill(v.registrationStatus)}</td>
-        <td>${statusPill(v.insuranceStatus)}</td>
         <td>${v.stolen ? `<span class="status alert">STOLEN</span>` : `<span class="status active">Clear</span>`}</td>
       </tr>`).join("");
   }
@@ -111,10 +111,12 @@ function toggleAddPanel(tab) {
         <div class="field"><label>Eye color</label><input id="np-eye" /></div>
         <div class="field"><label>Hair color</label><input id="np-hair" /></div>
         <div class="field full"><label>Address</label><input id="np-address" /></div>
+        <div class="field"><label>Phone</label><input id="np-phone" /></div>
         <div class="field"><label>Driver license #</label><input id="np-dl" /></div>
         <div class="field"><label>Driver license status</label>
           <select id="np-dlstatus"><option value="valid">Valid</option><option value="suspended">Suspended</option><option value="revoked">Revoked</option><option value="expired">Expired</option></select>
         </div>
+        <div class="field full"><label>Scars / marks / tattoos</label><input id="np-smt" /></div>
         <div class="field full"><label>Notes</label><textarea id="np-notes" rows="2"></textarea></div>
       </div>
       <div class="form-actions"><button class="secondary" id="np-cancel" type="button">Cancel</button><button id="np-save" type="button">Save person</button></div></div>`;
@@ -129,9 +131,10 @@ function toggleAddPanel(tab) {
         sex: panel.querySelector("#np-sex").value, race: panel.querySelector("#np-race").value.trim(),
         height: panel.querySelector("#np-height").value.trim(), weight: panel.querySelector("#np-weight").value.trim(),
         eyeColor: panel.querySelector("#np-eye").value.trim(), hairColor: panel.querySelector("#np-hair").value.trim(),
-        address: panel.querySelector("#np-address").value.trim(),
+        address: panel.querySelector("#np-address").value.trim(), phone: panel.querySelector("#np-phone").value.trim(),
         driverLicenseNumber: panel.querySelector("#np-dl").value.trim(),
         driverLicenseStatus: panel.querySelector("#np-dlstatus").value,
+        scarsMarksTattoos: panel.querySelector("#np-smt").value.trim(),
         notes: panel.querySelector("#np-notes").value.trim()
       });
       goTo(id);
@@ -141,6 +144,7 @@ function toggleAddPanel(tab) {
       <div class="panel"><div class="panel-head">Add a vehicle</div>
       <div class="form-grid">
         <div class="field"><label>Plate</label><input id="nv-plate" /></div>
+        <div class="field"><label>Plate state</label><select id="nv-state">${US_STATES.map(s => `<option ${s === "MI" ? "selected" : ""}>${s}</option>`).join("")}</select></div>
         <div class="field"><label>Year</label><input id="nv-year" /></div>
         <div class="field"><label>Make</label><input id="nv-make" /></div>
         <div class="field"><label>Model</label><input id="nv-model" /></div>
@@ -159,7 +163,8 @@ function toggleAddPanel(tab) {
       const plate = panel.querySelector("#nv-plate").value.trim();
       if (!plate) { alert("Plate is required."); return; }
       const id = await createVehicle({
-        plate, year: panel.querySelector("#nv-year").value.trim(), make: panel.querySelector("#nv-make").value.trim(),
+        plate, state: panel.querySelector("#nv-state").value,
+        year: panel.querySelector("#nv-year").value.trim(), make: panel.querySelector("#nv-make").value.trim(),
         model: panel.querySelector("#nv-model").value.trim(), color: panel.querySelector("#nv-color").value.trim(),
         registrationStatus: panel.querySelector("#nv-reg").value, insuranceStatus: panel.querySelector("#nv-ins").value,
         stolen: panel.querySelector("#nv-stolen").value === "true"
@@ -167,6 +172,36 @@ function toggleAddPanel(tab) {
       goTo(id);
     });
   }
+}
+
+// ---------------- Quick actions: auto-fill subject + suggest linked vehicle/person ----------------
+// Clicking "Create incident report" etc. on a profile hands off the subject
+// AND, if they have something linked, a suggestion to attach that too — so
+// the officer doesn't have to go look it up separately.
+function quickActionHandoff(destPage, subjectType, subject, label, relatedList, relatedType) {
+  const suggestion = (relatedList && relatedList.length)
+    ? { type: relatedType, id: relatedList[0].id, label: relatedType === "vehicle" ? vehicleLabel(relatedList[0]) : personLabel(relatedList[0]) }
+    : null;
+  setPrefill({ type: subjectType, id: subject.id, label, suggestion });
+  window.location.href = `${destPage}/#new`;
+}
+
+function quickActionsPanel(subjectType, subject, label, relatedList, relatedType) {
+  return `
+    <div class="panel">
+      <div class="panel-head">Quick actions</div>
+      <div class="quick-actions">
+        <button data-action="reports">Create incident report</button>
+        <button class="secondary" data-action="citations">Create citation</button>
+        <button class="secondary" data-action="bolo">Create BOLO</button>
+        <button class="secondary" data-action="records">Add record entry</button>
+      </div>
+    </div>`;
+}
+function wireQuickActions(container, subjectType, subject, label, relatedList, relatedType) {
+  container.querySelectorAll("[data-action]").forEach(btn => {
+    btn.addEventListener("click", () => quickActionHandoff(btn.dataset.action, subjectType, subject, label, relatedList, relatedType));
+  });
 }
 
 // ---------------- PERSON DETAIL ----------------
@@ -183,8 +218,8 @@ async function renderPersonDetail(p) {
     <div class="detail-head">
       <div class="avatar">${initialsBadge(`${p.first} ${p.last}`)}</div>
       <div class="who">
-        <div class="title">${esc(personLabel(p))}${(p.akaNames || []).length ? ` <span style="color:var(--text-dim); font-weight:400; font-size:12px;">aka ${esc(p.akaNames.join(", "))}</span>` : ""}</div>
-        <div class="meta">DOB ${esc(p.dob || "—")} &middot; ${esc(p.sex || "—")} &middot; ${esc(p.race || "—")} &middot; ${esc(p.height || "—")}, ${esc(p.weight || "—")} lbs &middot; Eyes ${esc(p.eyeColor || "—")}, Hair ${esc(p.hairColor || "—")}</div>
+        <div class="title">${esc(personLabel(p))}</div>
+        <div class="meta">${(p.akaNames || []).length ? `Also known as ${esc(p.akaNames.join(", "))}` : "No known aliases on file"}</div>
       </div>
     </div>
 
@@ -193,26 +228,55 @@ async function renderPersonDetail(p) {
     </div></div>` : ""}
 
     <div class="panel">
-      <div class="panel-head">Profile</div>
-      <div class="kv-grid">
-        <div class="kv"><span class="k">Address</span><span class="v dim">${esc(p.address || "—")}</span></div>
-        <div class="kv"><span class="k">Driver license #</span><span class="v dim">${esc(p.driverLicenseNumber || "—")}</span></div>
+      <div class="panel-head">Personal information</div>
+      <div class="kv-grid bordered">
+        <div class="kv"><span class="k">Date of birth</span><span class="v">${esc(p.dob || "—")}</span></div>
+        <div class="kv"><span class="k">Sex</span><span class="v">${esc(p.sex || "—")}</span></div>
+        <div class="kv"><span class="k">Race</span><span class="v">${esc(p.race || "—")}</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">Physical description</div>
+      <div class="kv-grid bordered">
+        <div class="kv"><span class="k">Height</span><span class="v">${esc(p.height || "—")}</span></div>
+        <div class="kv"><span class="k">Weight</span><span class="v">${esc(p.weight || "—")}</span></div>
+        <div class="kv"><span class="k">Eye color</span><span class="v">${esc(p.eyeColor || "—")}</span></div>
+        <div class="kv"><span class="k">Hair color</span><span class="v">${esc(p.hairColor || "—")}</span></div>
+        <div class="kv" style="grid-column: 1 / -1;"><span class="k">Scars / marks / tattoos</span><span class="v dim" style="font-weight:400;">${esc(p.scarsMarksTattoos || "None on file")}</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">Address &amp; contact</div>
+      <div class="kv-grid bordered">
+        <div class="kv" style="grid-column: span 2;"><span class="k">Address</span><span class="v dim">${esc(p.address || "—")}</span></div>
+        <div class="kv"><span class="k">Phone</span><span class="v dim">${esc(p.phone || "—")}</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">License &amp; permits</div>
+      <div class="kv-grid bordered">
+        <div class="kv"><span class="k">Driver license #</span><span class="v mono">${esc(p.driverLicenseNumber || "—")}</span></div>
         <div class="kv"><span class="k">License status</span><span class="v">${licenseStatusPill(p.driverLicenseStatus)}</span></div>
         <div class="kv"><span class="k">Gun permit</span><span class="v dim">${esc(p.gunPermitStatus || "none")}</span></div>
         <div class="kv"><span class="k">Gun license</span><span class="v dim">${esc(p.gunLicenseStatus || "none")}</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">Status</div>
+      <div class="kv-grid bordered">
         <div class="kv"><span class="k">Probation</span><span class="v dim">${p.probation ? "Active" : "No"}</span></div>
         <div class="kv"><span class="k">Parole</span><span class="v dim">${p.parole ? "Active" : "No"}</span></div>
         <div class="kv"><span class="k">Times stopped</span><span class="v dim">${p.timesStopped ?? 0}</span></div>
       </div>
-      ${p.notes ? `<div class="kv-grid" style="padding-top:0;"><div class="kv"><span class="k">Notes</span><span class="v dim" style="font-weight:400;">${esc(p.notes)}</span></div></div>` : ""}
-
-      <div class="quick-actions">
-        <button data-action="report">Create incident report</button>
-        <button class="secondary" data-action="citation">Create citation</button>
-        <button class="secondary" data-action="bolo">Create BOLO</button>
-        <button class="secondary" data-action="record">Add record entry</button>
-      </div>
     </div>
+
+    ${p.notes ? `<div class="panel"><div class="panel-head">Notes</div><div class="kv-grid"><div class="kv" style="grid-column:1/-1;"><span class="v dim" style="font-weight:400;">${esc(p.notes)}</span></div></div></div>` : ""}
+
+    <div id="quick-actions-slot"></div>
 
     <div class="panel">
       <div class="panel-head">Linked vehicles</div>
@@ -231,26 +295,12 @@ async function renderPersonDetail(p) {
     </div>`;
 
   document.getElementById("back-link").addEventListener("click", () => goTo(""));
+  document.getElementById("quick-actions-slot").innerHTML = quickActionsPanel("person", p, personLabel(p), linkedVehicles, "vehicle");
+  wireQuickActions(document.getElementById("quick-actions-slot"), "person", p, personLabel(p), linkedVehicles, "vehicle");
+
   root.querySelectorAll("[data-rec]").forEach(el => el.addEventListener("click", () => window.location.href = `records/#${el.dataset.rec}`));
   root.querySelectorAll("[data-veh]").forEach(el => el.addEventListener("click", () => goTo(el.dataset.veh)));
   root.querySelectorAll(".timeline-item[data-goto]").forEach(el => el.addEventListener("click", () => window.location.href = el.dataset.goto));
-
-  root.querySelector("[data-action='report']").addEventListener("click", () => {
-    setPrefill({ type: "person", id: p.id, label: personLabel(p) });
-    window.location.href = "reports/#new";
-  });
-  root.querySelector("[data-action='citation']").addEventListener("click", () => {
-    setPrefill({ type: "person", id: p.id, label: personLabel(p) });
-    window.location.href = "citations/#new";
-  });
-  root.querySelector("[data-action='bolo']").addEventListener("click", () => {
-    setPrefill({ type: "person", id: p.id, label: personLabel(p) });
-    window.location.href = "bolo/#new";
-  });
-  root.querySelector("[data-action='record']").addEventListener("click", () => {
-    setPrefill({ type: "person", id: p.id, label: personLabel(p) });
-    window.location.href = "records/#new";
-  });
 
   document.getElementById("link-vehicle-toggle").addEventListener("click", () => {
     const panel = document.getElementById("link-vehicle-panel");
@@ -293,7 +343,7 @@ async function renderVehicleDetail(v) {
       <div class="avatar">${esc((v.make || "V")[0])}${esc((v.model || "")[0] || "")}</div>
       <div class="who">
         <div class="title">${esc(v.plate)} ${v.stolen ? `<span class="status alert">STOLEN</span>` : ""}</div>
-        <div class="meta">${esc(v.year || "—")} ${esc(v.color || "")} ${esc(v.make || "")} ${esc(v.model || "")}</div>
+        <div class="meta">Plate issued: ${esc(v.state || "—")}</div>
       </div>
     </div>
 
@@ -302,19 +352,27 @@ async function renderVehicleDetail(v) {
     </div></div>` : ""}
 
     <div class="panel">
-      <div class="panel-head">Profile</div>
-      <div class="kv-grid">
-        <div class="kv"><span class="k">Registration</span><span class="v">${statusPill(v.registrationStatus)}</span></div>
-        <div class="kv"><span class="k">Insurance</span><span class="v">${statusPill(v.insuranceStatus)}</span></div>
-        <div class="kv"><span class="k">Registered owner</span><span class="v dim">${owner ? esc(personLabel(owner)) : "—"}</span></div>
-      </div>
-      <div class="quick-actions">
-        <button data-action="report">Create incident report</button>
-        <button class="secondary" data-action="citation">Create citation</button>
-        <button class="secondary" data-action="bolo">Create BOLO</button>
-        <button class="secondary" data-action="record">Add record entry</button>
+      <div class="panel-head">Vehicle information</div>
+      <div class="kv-grid bordered">
+        <div class="kv"><span class="k">Plate</span><span class="v mono">${esc(v.plate)}</span></div>
+        <div class="kv"><span class="k">Plate state</span><span class="v">${esc(v.state || "—")}</span></div>
+        <div class="kv"><span class="k">Year</span><span class="v">${esc(v.year || "—")}</span></div>
+        <div class="kv"><span class="k">Make</span><span class="v">${esc(v.make || "—")}</span></div>
+        <div class="kv"><span class="k">Model</span><span class="v">${esc(v.model || "—")}</span></div>
+        <div class="kv"><span class="k">Color</span><span class="v">${esc(v.color || "—")}</span></div>
       </div>
     </div>
+
+    <div class="panel">
+      <div class="panel-head">Registration &amp; insurance</div>
+      <div class="kv-grid bordered">
+        <div class="kv"><span class="k">Registration</span><span class="v">${statusPill(v.registrationStatus)}</span></div>
+        <div class="kv"><span class="k">Insurance</span><span class="v">${statusPill(v.insuranceStatus)}</span></div>
+        <div class="kv"><span class="k">Registered owner</span><span class="v">${owner ? `<a href="lookup/#${owner.id}" style="color:var(--blue);">${esc(personLabel(owner))}</a>` : "—"}</span></div>
+      </div>
+    </div>
+
+    <div id="quick-actions-slot"></div>
 
     <div class="panel">
       <div class="panel-head">Linked people</div>
@@ -331,26 +389,12 @@ async function renderVehicleDetail(v) {
     </div>`;
 
   document.getElementById("back-link").addEventListener("click", () => goTo("vehicle"));
+  document.getElementById("quick-actions-slot").innerHTML = quickActionsPanel("vehicle", v, vehicleLabel(v), linkedPeople, "person");
+  wireQuickActions(document.getElementById("quick-actions-slot"), "vehicle", v, vehicleLabel(v), linkedPeople, "person");
+
   root.querySelectorAll("[data-rec]").forEach(el => el.addEventListener("click", () => window.location.href = `records/#${el.dataset.rec}`));
   root.querySelectorAll("[data-per]").forEach(el => el.addEventListener("click", () => goTo(el.dataset.per)));
   root.querySelectorAll(".timeline-item[data-goto]").forEach(el => el.addEventListener("click", () => window.location.href = el.dataset.goto));
-
-  root.querySelector("[data-action='report']").addEventListener("click", () => {
-    setPrefill({ type: "vehicle", id: v.id, label: vehicleLabel(v) });
-    window.location.href = "reports/#new";
-  });
-  root.querySelector("[data-action='citation']").addEventListener("click", () => {
-    setPrefill({ type: "vehicle", id: v.id, label: vehicleLabel(v) });
-    window.location.href = "citations/#new";
-  });
-  root.querySelector("[data-action='bolo']").addEventListener("click", () => {
-    setPrefill({ type: "vehicle", id: v.id, label: vehicleLabel(v) });
-    window.location.href = "bolo/#new";
-  });
-  root.querySelector("[data-action='record']").addEventListener("click", () => {
-    setPrefill({ type: "vehicle", id: v.id, label: vehicleLabel(v) });
-    window.location.href = "records/#new";
-  });
 
   document.getElementById("link-person-toggle").addEventListener("click", () => {
     const panel = document.getElementById("link-person-panel");

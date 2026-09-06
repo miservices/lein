@@ -180,6 +180,7 @@ export async function createPerson(data) {
     akaNames: [], linkedVehicleIds: [], timesStopped: 0,
     driverLicenseStatus: "valid", probation: false, parole: false,
     gunPermitStatus: "none", gunLicenseStatus: "none",
+    phone: "", scarsMarksTattoos: "",
     isMock: false, ...data
   });
 }
@@ -187,7 +188,7 @@ export async function updatePerson(id, data) { return updateOne("people", id, da
 
 export async function createVehicle(data) {
   return addOne("vehicles", {
-    linkedPersonIds: [], registrationStatus: "valid", insuranceStatus: "valid",
+    linkedPersonIds: [], state: "MI", registrationStatus: "valid", insuranceStatus: "valid",
     stolen: false, isMock: false, ...data
   });
 }
@@ -285,3 +286,12 @@ export function isFlagWorthy(rec) {
   const alertTypes = ["warrant", "stolenVehicle", "courtOrder", "suspension", "revocation"];
   return alertTypes.includes(rec.recordType) && (rec.status === "active" || rec.status === "alert");
 }
+
+// ---------------------------------------------------------
+// Reference data — charge codes (for arrest reports) and citation codes
+// (for traffic/civil citations). Small, mostly-static lookup tables, seeded
+// once like everything else and editable straight in Firestore if you want
+// to add more charges/violations later.
+// ---------------------------------------------------------
+export const fetchChargeCodes = () => fetchAllOnce("chargeCodes");
+export const fetchCitationCodes = () => fetchAllOnce("citationCodes");

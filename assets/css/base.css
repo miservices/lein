@@ -357,3 +357,55 @@ label{ display:block; font-size: 11px; color: var(--text-dim); letter-spacing: 0
   padding: 10px 12px; margin: 0 16px 14px; font-size:12px; display:flex; align-items:center; gap:10px;
 }
 .prefill-box .spacer{ flex:1; }
+
+/* =========================================================
+   Records-style profile sections (Lookup) + repeatable form
+   builders (Reports: people/vehicles/evidence/charges) +
+   inline search-suggestion dropdowns.
+   ========================================================= */
+
+/* A real-records-style label/value row, used inside profile section
+   panels instead of cramming everything into the header line. */
+.kv-grid.bordered .kv{ border-bottom: 1px dashed var(--line); padding-bottom: 9px; }
+.kv .v.mono{ font-family: 'Courier New', monospace; letter-spacing: 0.02em; }
+.mono{ font-family: 'Courier New', monospace; letter-spacing: 0.02em; }
+.section-title{
+  font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;
+  color: var(--text-faint); padding: 14px 14px 0;
+}
+
+/* Repeatable card lists: people involved, vehicles involved, evidence, charges */
+.repeat-list{ display:flex; flex-direction:column; gap:10px; padding: 10px 14px 14px; }
+.repeat-card{
+  border:1px solid var(--line); border-radius:6px; padding:12px 14px; background:#0e1622; position:relative;
+}
+.repeat-card .repeat-remove{
+  position:absolute; top:8px; right:8px; background:transparent; border:none;
+  color:var(--text-faint); cursor:pointer; font-size:15px; padding:2px 8px; font-weight:700;
+}
+.repeat-card .repeat-remove:hover{ color:var(--alert); }
+.repeat-card .repeat-title{ font-size:11.5px; font-weight:700; color:var(--text-dim); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.03em; }
+.repeat-add-row{ padding: 0 14px 14px; }
+.repeat-add-row button{ font-size:12px; }
+
+/* Inline "search existing / add new" suggestion dropdown used throughout
+   the Reports form for people, vehicles, and charge codes. */
+.suggest-wrap{ position:relative; }
+.suggest-list{
+  position:absolute; top:100%; left:0; right:0; background: var(--panel); border:1px solid var(--blue);
+  border-radius:5px; max-height:190px; overflow-y:auto; z-index:30; margin-top:3px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+}
+.suggest-list .suggest-item{ padding:8px 11px; font-size:12px; cursor:pointer; border-bottom:1px solid var(--line); }
+.suggest-list .suggest-item:last-child{ border-bottom:none; }
+.suggest-list .suggest-item:hover{ background: rgba(63,140,255,0.15); }
+.suggest-list .suggest-item .si-sub{ color: var(--text-faint); font-size:10.5px; margin-top:1px; }
+
+.checkbox-row{ display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--text-dim); }
+.checkbox-row input[type="checkbox"]{ width:auto; accent-color: var(--blue); }
+.checkbox-group{ display:flex; flex-wrap:wrap; gap:14px; padding: 10px 0 2px; }
+
+.matched-tag{
+  display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:700; text-transform:uppercase;
+  letter-spacing:0.03em; color: var(--active); border:1px solid rgba(79,174,92,0.4); border-radius:4px; padding:2px 7px; margin-left:8px;
+}

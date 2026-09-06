@@ -67,6 +67,7 @@ async function renderNewForm() {
       <button type="button" id="prefill-yes" style="width:auto;">Yes, attach</button>
       <button type="button" class="secondary" id="prefill-no" style="width:auto;">Not them</button>
     </div>` : ""}
+    <div id="suggestion-slot"></div>
     <div class="panel">
       <div class="panel-head">New BOLO</div>
       <div class="type-picker">
@@ -108,12 +109,32 @@ async function renderNewForm() {
   renderPersonPicker(document.getElementById("person-slot"), peopleCache, (p) => { draft.personId = p.id; draft.personName = personLabel(p); refreshChips(); });
   renderVehiclePicker(document.getElementById("vehicle-slot"), vehicleCache, (v) => { draft.vehicleId = v.id; draft.vehicleLabel = vehicleLabel(v); refreshChips(); });
 
+  function showSuggestion() {
+    if (!prefill?.suggestion) return;
+    const s = prefill.suggestion;
+    document.getElementById("suggestion-slot").innerHTML = `
+      <div class="prefill-box" id="suggest-box">
+        <span>They also have <strong>${esc(s.label)}</strong> on file — issue this BOLO for both?</span>
+        <span class="spacer"></span>
+        <button type="button" id="suggest-yes" style="width:auto;">Yes, attach</button>
+        <button type="button" class="secondary" id="suggest-no" style="width:auto;">No thanks</button>
+      </div>`;
+    document.getElementById("suggest-yes").addEventListener("click", () => {
+      if (s.type === "vehicle") { draft.vehicleId = s.id; draft.vehicleLabel = s.label; }
+      else { draft.personId = s.id; draft.personName = s.label; }
+      refreshChips();
+      document.getElementById("suggest-box").remove();
+    });
+    document.getElementById("suggest-no").addEventListener("click", () => document.getElementById("suggest-box").remove());
+  }
+
   const prefillYes = document.getElementById("prefill-yes");
   if (prefillYes) prefillYes.addEventListener("click", () => {
     if (prefill.type === "person") { draft.personId = prefill.id; draft.personName = prefill.label; }
     if (prefill.type === "vehicle") { draft.vehicleId = prefill.id; draft.vehicleLabel = prefill.label; }
     refreshChips();
     document.getElementById("prefill-box").remove();
+    showSuggestion();
   });
   const prefillNo = document.getElementById("prefill-no");
   if (prefillNo) prefillNo.addEventListener("click", () => document.getElementById("prefill-box").remove());

@@ -119,3 +119,44 @@ export const COURT_JUDGES = [
 export const COURTS = [
   "Genesee County 67th District Court", "Genesee County Circuit Court", "Flint Municipal Court"
 ];
+
+// ---------------------------------------------------------
+// Reference data for Reports / Records / Lookup forms.
+// ---------------------------------------------------------
+export const US_STATES = [
+  "MI","AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY",
+  "LA","ME","MD","MA","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK",
+  "OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"
+];
+// Flint, MI zip range — used as the auto-fill default/options everywhere an
+// address is captured in this app, since almost everything happens locally.
+export const FLINT_ZIPS = ["48501", "48502", "48503", "48504", "48505", "48506", "48507"];
+export const DEFAULT_CITY = "Flint";
+export const DEFAULT_STATE = "MI";
+export const DEFAULT_ZIP = "48503";
+
+export const LOCATION_TYPES = ["", "Residence", "Business", "Roadway", "Park", "School", "Other"];
+export const INCIDENT_TYPES = [
+  "Suspicious Activity", "Domestic Disturbance", "Theft", "Assault", "Burglary",
+  "Vandalism", "Trespassing", "Disorderly Conduct", "Noise Complaint", "Welfare Check",
+  "Traffic Collision", "Fraud", "Missing Person", "Other"
+];
+export const PERSON_ROLES = ["Victim", "Witness", "Complainant", "Suspect", "Reporting Party", "Arrestee", "Other"];
+export const DISPOSITIONS = ["Report Only", "No Action", "Arrest", "Citation", "Referred", "Unfounded"];
+export const ARREST_TYPES = ["Warrant", "Probable Cause"];
+export const EVIDENCE_DISPOSITIONS = ["Seized", "Booked into Evidence", "Returned to Owner", "Destroyed", "Released"];
+export const VERDICTS = ["Pending", "Guilty", "Not Guilty", "Dismissed", "Diverted"];
+
+// Rough juvenile check for the arrest form's auto-suggestion — an officer
+// can always override it, this is just a starting point from DOB.
+export function isJuvenile(dob) {
+  if (!dob) return null;
+  const birth = new Date(dob);
+  if (isNaN(birth.getTime())) return null;
+  const ageMs = Date.now() - birth.getTime();
+  const age = ageMs / (1000 * 60 * 60 * 24 * 365.25);
+  return age < 18;
+}
+export function todayISO() { return new Date().toISOString().slice(0, 10); }
+export function nowTimeHHMM() { return new Date().toTimeString().slice(0, 5); }
+export function uid() { return Math.random().toString(36).slice(2, 10); }

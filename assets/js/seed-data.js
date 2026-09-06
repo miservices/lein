@@ -73,19 +73,19 @@ export const seedPeople = [
 
 // ---- Vehicles -------------------------------------------------
 export const seedVehicles = [
-  { _id: "v1", plate: "7YRK209", make: "Dodge", model: "Charger", year: "2016", color: "Black",
+  { _id: "v1", plate: "7YRK209", state: "MI", make: "Dodge", model: "Charger", year: "2016", color: "Black",
     registeredOwnerPersonId: "p4", registrationStatus: "expired", insuranceStatus: "invalid", stolen: false },
-  { _id: "v2", plate: "EFR-4471", make: "Toyota", model: "Camry", year: "2019", color: "Silver",
+  { _id: "v2", plate: "EFR-4471", state: "MI", make: "Toyota", model: "Camry", year: "2019", color: "Silver",
     registeredOwnerPersonId: "p3", registrationStatus: "valid", insuranceStatus: "valid", stolen: false },
-  { _id: "v3", plate: "GNC-9081", make: "Ford", model: "F-150", year: "2014", color: "Red",
+  { _id: "v3", plate: "GNC-9081", state: "MI", make: "Ford", model: "F-150", year: "2014", color: "Red",
     registeredOwnerPersonId: "p6", registrationStatus: "valid", insuranceStatus: "valid", stolen: false },
-  { _id: "v4", plate: "8KTL552", make: "Chevrolet", model: "Malibu", year: "2011", color: "White",
+  { _id: "v4", plate: "8KTL552", state: "MI", make: "Chevrolet", model: "Malibu", year: "2011", color: "White",
     registeredOwnerPersonId: "p1", registrationStatus: "suspended", insuranceStatus: "invalid", stolen: false },
-  { _id: "v5", plate: "DVX-1123", make: "Honda", model: "Civic", year: "2020", color: "Blue",
+  { _id: "v5", plate: "DVX-1123", state: "MI", make: "Honda", model: "Civic", year: "2020", color: "Blue",
     registeredOwnerPersonId: "p5", registrationStatus: "valid", insuranceStatus: "valid", stolen: false },
-  { _id: "v6", plate: "9PLM044", make: "Jeep", model: "Grand Cherokee", year: "2017", color: "Gray",
+  { _id: "v6", plate: "9PLM044", state: "MI", make: "Jeep", model: "Grand Cherokee", year: "2017", color: "Gray",
     registeredOwnerPersonId: "p7", registrationStatus: "valid", insuranceStatus: "valid", stolen: true },
-  { _id: "v7", plate: "FTB-2290", make: "Nissan", model: "Altima", year: "2015", color: "Black",
+  { _id: "v7", plate: "FTB-2290", state: "OH", make: "Nissan", model: "Altima", year: "2015", color: "Black",
     registeredOwnerPersonId: "p8", registrationStatus: "valid", insuranceStatus: "expired", stolen: false }
 ];
 
@@ -189,4 +189,24 @@ export const seedRecords = [
     description: "Suspended, unpaid fines on file with 67th District Court.", status: "active" },
   { _id: "rec11", recordType: "stolenVehicle", vehicleId: "v6", vehicleLabel: "9PLM044 - Gray Jeep Grand Cherokee", title: "Stolen vehicle - entered statewide",
     description: "Reported stolen 08/11 from owner's residence on Corunna Rd. Entered into LEIN statewide index.", status: "active" }
+];
+
+// ---- Charge codes (arrest reports) — real MCL citations. Add more anytime
+// straight in Firestore under "chargeCodes"; the arrest form just reads
+// whatever's in that collection.
+export const seedChargeCodes = [
+  { name: "Assault and Battery", statute: "MCL 750.81", classification: "Misdemeanor" }
+];
+
+// ---- Citation codes (traffic/civil citations) — real MCL citations for
+// common Michigan moving violations. Add more the same way, under
+// "citationCodes" in Firestore.
+export const seedCitationCodes = [
+  { violation: "Basic speed law violation (careless/imprudent speed)", statute: "MCL 257.627(1)", classification: "Civil Infraction" },
+  { violation: "Exceeding posted speed limit", statute: "MCL 257.628", classification: "Civil Infraction" },
+  { violation: "Speeding in a school zone", statute: "MCL 257.627a", classification: "Civil Infraction" },
+  { violation: "Careless or negligent operation of a vehicle", statute: "MCL 257.626b", classification: "Civil Infraction" },
+  { violation: "Driving while license suspended/revoked (DWLS)", statute: "MCL 257.904", classification: "Misdemeanor" },
+  { violation: "No operator's license on person", statute: "MCL 257.311", classification: "Misdemeanor" },
+  { violation: "Expired registration", statute: "MCL 257.255", classification: "Civil Infraction" }
 ];

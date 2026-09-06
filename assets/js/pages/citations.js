@@ -1,6 +1,6 @@
 import { injectNav } from "../nav.js";
 import { initAuth } from "../auth.js";
-import { subscribeCitations, createCitation, updateCitation, fetchAllOnce } from "../data-service.js";
+import { subscribeCitations, createCitation, updateCitation, fetchAllOnce, fetchCitationCodes } from "../data-service.js";
 import { renderPersonPicker, renderVehiclePicker, personLabel, vehicleLabel } from "../link-picker.js";
 import { esc, fmtAge, fmtDate, pick, COURT_JUDGES, COURTS } from "../util.js";
 import { currentHash, onHashChange, goTo, takePrefill } from "../router.js";
@@ -12,6 +12,7 @@ const root = document.getElementById("page-root");
 let allCitations = [];
 let peopleCache = [];
 let vehicleCache = [];
+let citationCodes = [];
 
 function myUnit() { return JSON.parse(localStorage.getItem("lein_active_unit") || "null"); }
 function dispositionPill(d) {
@@ -59,6 +60,7 @@ async function renderNewForm() {
   const prefill = takePrefill();
   if (!peopleCache.length) peopleCache = await fetchAllOnce("people");
   if (!vehicleCache.length) vehicleCache = await fetchAllOnce("vehicles");
+  if (!citationCodes.length) citationCodes = await fetchCitationCodes();
 
   const draft = { personId: null, personName: null, vehicleId: null, vehicleLabel: null };
 
@@ -70,6 +72,7 @@ async function renderNewForm() {
       <button type="button" id="prefill-yes" style="width:auto;">Yes, attach</button>
       <button type="button" class="secondary" id="prefill-no" style="width:auto;">Not them</button>
     </div>` : ""}
+    <div id="suggestion-slot"></div>
     <div class="panel">
       <div class="panel-head">New citation</div>
       <div class="form-grid">
@@ -78,8 +81,14 @@ async function renderNewForm() {
       </div>
       <div class="chip-row" id="linked-chips"></div>
       <div class="form-grid">
+        <div class="field full suggest-wrap">
+          <label>Violation (search the citation code database, or type your own)</label>
+          <input id="f-violation-search" placeholder="e.g. speeding, expired registration..." autocomplete="off" />
+          <div id="violation-suggest" class="suggest-list" style="display:none;"></div>
+        </div>
         <div class="field"><label>Violation</label><input id="f-violation" placeholder="e.g. Speeding 15 over" /></div>
-        <div class="field"><label>Statute / code</label><input id="f-code" placeholder="e.g. MCL 257.627" /></div>
+        <div class="field"><label>Statute / code</label><input id="f-code" placeholder="e.g. MCL 257.627(1)" /></div>
+        <div class="field"><label>Classification</label><input id="f-classification" placeholder="e.g. Civil Infraction" /></div>
         <div class="field"><label>Fine</label><input id="f-fine" placeholder="e.g. $165" /></div>
         <div class="field"><label>Disposition</label>
           <select id="f-disposition"><option value="pending">Pending</option><option value="guilty">Guilty</option><option value="not guilty">Not guilty</option><option value="dismissed">Dismissed</option></select>
@@ -102,6 +111,27 @@ async function renderNewForm() {
     document.getElementById("f-judge").value = pick(COURT_JUDGES);
   });
 
+  // Violation search against the citationCodes database
+  const violationSearch = document.getElementById("f-violation-search");
+  const violationSuggest = document.getElementById("violation-suggest");
+  violationSearch.addEventListener("input", () => {
+    const t = violationSearch.value.trim().toLowerCase();
+    if (!t) { violationSuggest.style.display = "none"; return; }
+    const matches = citationCodes.filter(c => c.violation.toLowerCase().includes(t) || (c.statute || "").toLowerCase().includes(t)).slice(0, 8);
+    if (!matches.length) { violationSuggest.style.display = "none"; return; }
+    violationSuggest.style.display = "";
+    violationSuggest.innerHTML = matches.map((c, i) => `
+      <div class="suggest-item" data-i="${i}">${esc(c.violation)}<div class="si-sub">${esc(c.statute)} &middot; ${esc(c.classification)}</div></div>`).join("");
+    violationSuggest.querySelectorAll(".suggest-item").forEach(el => el.addEventListener("click", () => {
+      const c = matches[el.dataset.i];
+      document.getElementById("f-violation").value = c.violation;
+      document.getElementById("f-code").value = c.statute;
+      document.getElementById("f-classification").value = c.classification;
+      violationSearch.value = "";
+      violationSuggest.style.display = "none";
+    }));
+  });
+
   function refreshChips() {
     const chips = document.getElementById("linked-chips");
     chips.innerHTML = [
@@ -116,22 +146,40 @@ async function renderNewForm() {
   }
   refreshChips();
 
-  const prefillYes = document.getElementById("prefill-yes");
-  if (prefillYes) prefillYes.addEventListener("click", () => {
-    if (prefill.type === "person") { draft.personId = prefill.id; draft.personName = prefill.label; }
-    if (prefill.type === "vehicle") { draft.vehicleId = prefill.id; draft.vehicleLabel = prefill.label; }
-    refreshChips();
-    document.getElementById("prefill-box").remove();
-  });
-  const prefillNo = document.getElementById("prefill-no");
-  if (prefillNo) prefillNo.addEventListener("click", () => document.getElementById("prefill-box").remove());
-
   renderPersonPicker(document.getElementById("person-slot"), peopleCache, (p) => {
     draft.personId = p.id; draft.personName = personLabel(p); refreshChips();
   });
   renderVehiclePicker(document.getElementById("vehicle-slot"), vehicleCache, (v) => {
     draft.vehicleId = v.id; draft.vehicleLabel = vehicleLabel(v); refreshChips();
   });
+
+  function showVehicleSuggestion() {
+    if (!prefill?.suggestion || prefill.suggestion.type !== "vehicle" || draft.vehicleId) return;
+    document.getElementById("suggestion-slot").innerHTML = `
+      <div class="prefill-box" id="suggest-box">
+        <span>They also have <strong>${esc(prefill.suggestion.label)}</strong> on file — attach that vehicle too?</span>
+        <span class="spacer"></span>
+        <button type="button" id="suggest-yes" style="width:auto;">Yes, attach</button>
+        <button type="button" class="secondary" id="suggest-no" style="width:auto;">No thanks</button>
+      </div>`;
+    document.getElementById("suggest-yes").addEventListener("click", () => {
+      draft.vehicleId = prefill.suggestion.id; draft.vehicleLabel = prefill.suggestion.label;
+      refreshChips();
+      document.getElementById("suggest-box").remove();
+    });
+    document.getElementById("suggest-no").addEventListener("click", () => document.getElementById("suggest-box").remove());
+  }
+
+  const prefillYes = document.getElementById("prefill-yes");
+  if (prefillYes) prefillYes.addEventListener("click", () => {
+    if (prefill.type === "person") { draft.personId = prefill.id; draft.personName = prefill.label; }
+    if (prefill.type === "vehicle") { draft.vehicleId = prefill.id; draft.vehicleLabel = prefill.label; }
+    refreshChips();
+    document.getElementById("prefill-box").remove();
+    showVehicleSuggestion();
+  });
+  const prefillNo = document.getElementById("prefill-no");
+  if (prefillNo) prefillNo.addEventListener("click", () => document.getElementById("prefill-box").remove());
 
   document.getElementById("save-btn").addEventListener("click", async () => {
     const violation = document.getElementById("f-violation").value.trim();
@@ -141,6 +189,7 @@ async function renderNewForm() {
       personId: draft.personId, personName: draft.personName,
       vehicleId: draft.vehicleId, vehicleLabel: draft.vehicleLabel,
       violation, code: document.getElementById("f-code").value.trim(),
+      classification: document.getElementById("f-classification").value.trim(),
       fine: document.getElementById("f-fine").value.trim(),
       disposition: document.getElementById("f-disposition").value,
       court: document.getElementById("f-court").value.trim(),
@@ -158,7 +207,7 @@ function renderDetail(c) {
       <div class="avatar">CT</div>
       <div class="who">
         <div class="title">${esc(c.violation)}</div>
-        <div class="meta">${esc(c.code || "—")} &middot; Issued by ${esc(c.issuedBy || "—")}</div>
+        <div class="meta">${esc(c.code || "—")}${c.classification ? ` &middot; ${esc(c.classification)}` : ""} &middot; Issued by ${esc(c.issuedBy || "—")}</div>
         <div class="case-id">Citation #${esc(c.id)}</div>
       </div>
       <div class="detail-actions">${dispositionPill(c.disposition)}</div>
@@ -166,7 +215,7 @@ function renderDetail(c) {
 
     <div class="panel">
       <div class="panel-head">Details</div>
-      <div class="kv-grid">
+      <div class="kv-grid bordered">
         <div class="kv"><span class="k">Person</span><span class="v">${c.personId ? `<a href="lookup/#${c.personId}" style="color:var(--blue);">${esc(c.personName)}</a>` : "—"}</span></div>
         <div class="kv"><span class="k">Vehicle</span><span class="v">${c.vehicleId ? `<a href="lookup/#${c.vehicleId}" style="color:var(--blue);">${esc(c.vehicleLabel)}</a>` : "—"}</span></div>
         <div class="kv"><span class="k">Fine</span><span class="v dim">${esc(c.fine || "—")}</span></div>

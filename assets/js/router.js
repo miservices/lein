@@ -19,9 +19,12 @@ export function isRecordId(hash) {
 }
 
 // ---- Cross-page prefill handoff ----------------------------------------
-// Lookup sets one of these before navigating to Reports/Citations/BOLO so
-// the destination page can offer "attach this person/vehicle?" instead of
+// Lookup sets one of these before navigating to Reports/Citations/BOLO/Records
+// so the destination page can offer "attach this person/vehicle?" instead of
 // re-typing everything that's already on file. One-shot: read once, gone.
+// Shape: { type: "person"|"vehicle", id, label, suggestedVehicle?: {id,label} }
+// suggestedVehicle is only present when prefilling a person who already has
+// a linked vehicle on file — the destination page then offers to attach both.
 export function setPrefill(payload) {
   sessionStorage.setItem("lein_prefill", JSON.stringify(payload));
 }
