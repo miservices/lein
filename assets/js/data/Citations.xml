@@ -1,0 +1,167 @@
+<!--
+    MICHIGAN CITATION SET — civil infractions and ticketable offenses, researched from
+    the Michigan Vehicle Code (MCL 257), NREPA (MCL 324), the Michigan Penal Code
+    (MCL 750), and current statewide fine schedules (SCAO / district court schedules).
+
+    Notes on how this differs from a straight lookup:
+      - Where MCL sets a specific STATUTORY fine (mainly speeding, MCL 257.629c), that
+        number is used. Courts add costs/assessments on top in real life, and total
+        speeding-ticket costs are statutorily capped at $240 (MCL 257.907) — so treat
+        these as the base fine, not the full amount a driver would actually pay.
+      - Most other civil infractions (careless driving, equipment, non-moving) don't
+        have one fixed statewide number — each district court sets its own schedule
+        within state guidelines. The figures here are realistic, representative
+        amounts pulled from published Michigan district court fine schedules.
+      - Parking fines are set by MUNICIPAL ordinance, not state law (except disability
+        parking, which MCL 257.675 sets a state floor for) — so these are
+        representative, not a single legal statewide figure.
+      - A few charges from the original file weren't dropped, they were corrected:
+        "Public Intoxication" isn't a Michigan crime (decriminalized 1978 — see the
+        note in Charges.xml); "Loitering" as a stand-alone offense was struck down as
+        unconstitutionally vague and Michigan's remaining loitering law only covers
+        loitering for drug activity; "Reckless Endangerment," "Mischief," and generic
+        "Illegal Protesting" aren't Michigan statutory terms, so they were replaced
+        with what an officer would actually write in Michigan for that conduct.
+      - A handful of citations here (marked with arrestable="true") are technically
+        misdemeanors, not true civil infractions, but are commonly issued as a ticket
+        in the field — see Charges.xml for their full jail/probation exposure.
+
+    Acceptable attributes for each "Citation" tag:
+      - "name" is the citation name or title
+      - "fine" is the amount of fine money
+      - "arrestable" (true/false) flags a citation that is legally a misdemeanor
+        rather than a pure civil infraction — see Charges.xml for the full penalty
+-->
+
+<CompuLiteCitations>
+	<CitationGroup name="Public Order &amp; Nuisance">
+		<Citation name="Disorderly Conduct (MCL 750.167)" fine="500" arrestable="true"/>
+		<Citation name="Trespassing (MCL 750.552)" fine="250" arrestable="true"/>
+		<Citation name="Indecent Exposure (MCL 750.335a)" fine="1000" arrestable="true"/>
+		<Citation name="Public Urination or Defecation, Charged as Disorderly Conduct (MCL 750.167)" fine="500" arrestable="true"/>
+		<Citation name="Jaywalking / Crossing Outside a Marked Crosswalk (MCL 257.655)" fine="100"/>
+		<Citation name="Littering (MCL 324.8905)" fine="800"/>
+		<Citation name="Loitering for the Purpose of Illegal Drug Activity (MCL 750.167(1)(h))" fine="500" arrestable="true"/>
+		<Citation name="Smoking in a Prohibited Public Place, Smoke-Free Air Law (MCL 333.12603)" fine="100"/>
+		<Citation name="Minor in Possession of Alcohol (MCL 436.1703)" fine="100"/>
+		<Citation name="Furnishing/Purchasing Alcohol for a Minor (MCL 436.1701)" fine="1000" arrestable="true"/>
+		<Citation name="Obstructing a Sidewalk or Roadway, Unpermitted Assembly (Local Ordinance)" fine="250"/>
+		<Citation name="Animal at Large / Pet Running Loose (Local Ordinance)" fine="100"/>
+		<Citation name="Failure to Clean Up After a Pet (Local Ordinance)" fine="50"/>
+		<Citation name="Camping in an Undesignated Area, Civil Infraction Level (MCL 324.503)" fine="250"/>
+	</CitationGroup>
+
+	<CitationGroup name="Vehicle Speeding (MCL 257.629c / 257.627-628)">
+		<Citation name="Speeding 1-5 MPH Over the Limit" fine="10"/>
+		<Citation name="Speeding 6-10 MPH Over the Limit" fine="20"/>
+		<Citation name="Speeding 11-15 MPH Over the Limit" fine="30"/>
+		<Citation name="Speeding 16-25 MPH Over the Limit" fine="40"/>
+		<Citation name="Speeding 26 MPH or More Over the Limit" fine="50"/>
+		<Citation name="Speeding in a School Zone (Fine Doubled, MCL 257.601b)" fine="100"/>
+		<Citation name="Speeding in a Posted Work Zone (Fine Doubled, MCL 257.601b)" fine="100"/>
+		<Citation name="Extreme Speeding, 100+ MPH (Reckless Driving Also Applies, See Charges.xml)" fine="50" arrestable="true"/>
+	</CitationGroup>
+
+	<CitationGroup name="Moving Violations">
+		<Citation name="Careless Driving (MCL 257.626b)" fine="150"/>
+		<Citation name="Following too Closely (MCL 257.402)" fine="150"/>
+		<Citation name="Failure to Yield the Right-of-Way (MCL 257.649)" fine="150"/>
+		<Citation name="Failure to Stop at a Stop Sign (MCL 257.649)" fine="150"/>
+		<Citation name="Running a Red Light (MCL 257.612)" fine="150"/>
+		<Citation name="Improper Lane Use (MCL 257.642)" fine="100"/>
+		<Citation name="Improper or Illegal U-Turn (MCL 257.647)" fine="100"/>
+		<Citation name="Improper Passing (MCL 257.636-257.640)" fine="150"/>
+		<Citation name="Failure to Signal a Turn or Lane Change (MCL 257.648)" fine="100"/>
+		<Citation name="Crossing a Center Line / Driving Left of Center (MCL 257.634)" fine="150"/>
+		<Citation name="Driving the Wrong Way on a One-Way Street (MCL 257.643)" fine="150"/>
+		<Citation name="Failure to Move Over/Slow Down for a Stopped Emergency Vehicle (MCL 257.653a)" fine="400"/>
+		<Citation name="Illegally Passing a Stopped School Bus, No Injury (MCL 257.682)" fine="500" arrestable="true"/>
+		<Citation name="Improper Use of High-Beam Headlights (MCL 257.699)" fine="100"/>
+		<Citation name="Open Intoxicants in a Vehicle (MCL 257.624a)" fine="100"/>
+		<Citation name="Failure to Secure a Load (MCL 257.719)" fine="150"/>
+		<Citation name="Operating a Bicycle on a Limited-Access Highway (MCL 257.660)" fine="100"/>
+		<Citation name="Riding a Bicycle Without a Required Helmet, Rider Under 16 (Local Ordinance)" fine="75"/>
+	</CitationGroup>
+
+	<CitationGroup name="Distracted Driving &amp; Occupant Restraint">
+		<Citation name="Handheld Cell Phone Use While Driving - 1st Offense (MCL 257.602b)" fine="200"/>
+		<Citation name="Handheld Cell Phone Use While Driving - 2nd or Subsequent Offense (MCL 257.602b)" fine="500"/>
+		<Citation name="Seat Belt Violation, Driver or Front Seat Passenger (MCL 257.710e)" fine="65"/>
+		<Citation name="Child Restraint / Car Seat Violation (MCL 257.710d)" fine="65"/>
+	</CitationGroup>
+
+	<CitationGroup name="Vehicle Equipment">
+		<Citation name="Cracked or Obstructed Windshield (MCL 257.709)" fine="150"/>
+		<Citation name="Headlight or Taillight Out (MCL 257.697/257.698)" fine="100"/>
+		<Citation name="Illegal Window Tint (MCL 257.709(1)(c))" fine="150"/>
+		<Citation name="Illegal Lighting Color / Neon Underglow (MCL 257.686)" fine="150"/>
+		<Citation name="Failure to Properly Display a License Plate (MCL 257.225)" fine="100"/>
+		<Citation name="No Muffler / Illegally Loud Exhaust (MCL 257.707)" fine="150"/>
+		<Citation name="Defective Brakes or Tires (MCL 257.705/257.711)" fine="150"/>
+		<Citation name="Unauthorized Emergency Lighting Equipment on a Private Vehicle (MCL 257.698)" fine="200"/>
+		<Citation name="Unsafe/Unroadworthy Vehicle, General Equipment Violation (MCL 257.683)" fine="300"/>
+	</CitationGroup>
+
+	<CitationGroup name="Vehicle Documents &amp; Registration">
+		<Citation name="Failure to Carry Proof of Insurance (MCL 500.3102)" fine="100"/>
+		<Citation name="Operating an Uninsured Motor Vehicle (MCL 500.3102)" fine="500" arrestable="true"/>
+		<Citation name="Expired Vehicle Registration (MCL 257.255)" fine="100"/>
+		<Citation name="Failure to Carry Vehicle Registration (MCL 257.223)" fine="100"/>
+		<Citation name="Failure to Notify SOS of an Address Change (MCL 257.217)" fine="100"/>
+		<Citation name="Expired Driver's License (MCL 257.311)" fine="100"/>
+		<Citation name="Failure to Carry a Driver's License (MCL 257.311)" fine="100"/>
+		<Citation name="Driving Without Ever Having Obtained a License (MCL 257.301)" fine="500" arrestable="true"/>
+	</CitationGroup>
+
+	<CitationGroup name="Parking Violations (Municipal Ordinance)">
+		<Citation name="Parking in or Blocking a Disability Parking Space (MCL 257.674/675)" fine="250"/>
+		<Citation name="Blocking a Sidewalk Accessibility Ramp (MCL 257.674)" fine="250"/>
+		<Citation name="Parking in Front of a Fire Hydrant" fine="150"/>
+		<Citation name="Parking in a Posted Fire Lane" fine="150"/>
+		<Citation name="Parking in a Loading Zone" fine="100"/>
+		<Citation name="Parking on or Blocking a Crosswalk" fine="100"/>
+		<Citation name="Parking Blocking a Driveway" fine="100"/>
+		<Citation name="Parking Blocking a Street Excavation/Work Site" fine="100"/>
+		<Citation name="Double-Parking" fine="85"/>
+		<Citation name="Parked Facing the Wrong Direction" fine="85"/>
+		<Citation name="Parking on a Sidewalk" fine="90"/>
+		<Citation name="Parking in a Posted No-Parking Zone" fine="75"/>
+		<Citation name="Expired Parking Meter" fine="30"/>
+	</CitationGroup>
+
+	<CitationGroup name="DNR - Hunting, Fishing &amp; Land Use Citations">
+		<Citation name="Fishing With an Expired License (MCL 324.43547)" fine="100"/>
+		<Citation name="Hunting With an Expired License (MCL 324.43547)" fine="100"/>
+		<Citation name="Failure to Carry or Display a Valid Hunting/Fishing License (MCL 324.43539)" fine="75"/>
+		<Citation name="Failure to Wear Required Hunter Orange During Firearm Season (MCL 324.40113)" fine="100"/>
+		<Citation name="Fishing Without a Required Trout/Salmon Stamp (MCL 324.43536)" fine="75"/>
+		<Citation name="Fish or Game Tag Not Validated/Attached Immediately Upon Kill (MCL 324.40112)" fine="100"/>
+		<Citation name="ORV Operating Without a Valid Registration or Trail Permit (MCL 324.81114)" fine="75"/>
+		<Citation name="Snowmobile Operating Without a Valid Registration (MCL 324.82107)" fine="75"/>
+		<Citation name="ORV Rider Under 18 Without a Required Safety Helmet (MCL 324.81129)" fine="75"/>
+		<Citation name="State Park Vehicle Entry Permit / Recreation Passport Not Displayed (MCL 324.71107)" fine="18"/>
+		<Citation name="Feeding Wildlife in a State Park, DNR Order (MCL 324.503)" fine="75"/>
+	</CitationGroup>
+
+	<CitationGroup name="Marine Patrol - Boating &amp; Watercraft Citations">
+		<Citation name="No Certificate of Number / Boat Registration Displayed (MCL 324.80315)" fine="75"/>
+		<Citation name="Insufficient Life Jackets/PFDs Aboard for Each Passenger (MCL 324.80130)" fine="75"/>
+		<Citation name="No Fire Extinguisher Aboard When Required (MCL 324.80132)" fine="75"/>
+		<Citation name="No Boater Safety Certificate, Operator Born After 12/31/1978 (MCL 324.80130a)" fine="75"/>
+		<Citation name="Overloading a Vessel Beyond Its Capacity Plate (MCL 324.80131)" fine="100"/>
+		<Citation name="No or Improper Navigation Lights After Sunset (MCL 324.80145)" fine="100"/>
+		<Citation name="Excessive Vessel Noise / Illegal Muffler (MCL 324.80146)" fine="100"/>
+		<Citation name="Personal Watercraft Operator Under the Minimum Age Requirement (MCL 324.80176a)" fine="150"/>
+		<Citation name="Water Skiing Without an Observer or After Sunset (MCL 324.80149)" fine="100"/>
+	</CitationGroup>
+
+	<CitationGroup name="Beach &amp; Park Citations">
+		<Citation name="Glass Containers on a Public Beach (Local Ordinance)" fine="100"/>
+		<Citation name="Dog Off-Leash on a Restricted Beach (Local Ordinance)" fine="100"/>
+		<Citation name="Swimming Outside Designated/Posted Hours (Local or DNR Order)" fine="100"/>
+		<Citation name="Unauthorized Bonfire/Open Burning on a Beach or in a Park (Local Fire Ordinance)" fine="250"/>
+		<Citation name="Noise Ordinance Violation (Local Ordinance)" fine="250"/>
+		<Citation name="Curfew Violation, Minor (Local Ordinance)" fine="150"/>
+		<Citation name="Improper Disposal of Fish Waste/Bait at a Public Access Site (Local Ordinance)" fine="75"/>
+	</CitationGroup>
+</CompuLiteCitations>

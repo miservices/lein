@@ -121,12 +121,13 @@ async function renderNewForm() {
     if (!matches.length) { violationSuggest.style.display = "none"; return; }
     violationSuggest.style.display = "";
     violationSuggest.innerHTML = matches.map((c, i) => `
-      <div class="suggest-item" data-i="${i}">${esc(c.violation)}<div class="si-sub">${esc(c.statute)} &middot; ${esc(c.classification)}</div></div>`).join("");
+      <div class="suggest-item" data-i="${i}">${esc(c.violation)}<div class="si-sub">${esc(c.statute)} &middot; ${esc(c.classification)}${c.fineDisplay ? ` &middot; ${esc(c.fineDisplay)}` : ""}</div></div>`).join("");
     violationSuggest.querySelectorAll(".suggest-item").forEach(el => el.addEventListener("click", () => {
       const c = matches[el.dataset.i];
       document.getElementById("f-violation").value = c.violation;
       document.getElementById("f-code").value = c.statute;
       document.getElementById("f-classification").value = c.classification;
+      if (c.fineDisplay) document.getElementById("f-fine").value = c.fineDisplay;
       violationSearch.value = "";
       violationSuggest.style.display = "none";
     }));

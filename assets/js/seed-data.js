@@ -152,7 +152,7 @@ export const seedCitations = [
     fine: "$165", disposition: "guilty", court: "Genesee County 67th District Court", presidingJudge: "Hon. P. Whitfield", hearingDate: "2026-07-14" },
   { _id: "ct3", personId: "p6", vehicleId: "v3", personName: "Bennett, Harold J", vehicleLabel: "GNC-9081 - Red Ford F-150",
     violation: "Expired registration", code: "MCL 257.255",
-    fine: "$110", disposition: "dismissed", court: "Flint Municipal Court", presidingJudge: "Hon. M. Osei", hearingDate: "2026-06-02" }
+    fine: "$110", disposition: "dismissed", court: "Genesee County 67th District Court", presidingJudge: "Hon. M. Osei", hearingDate: "2026-06-02" }
 ];
 
 // ---- BOLOs ----------------------------------------------------
@@ -168,7 +168,7 @@ export const seedBolos = [
 export const seedRecords = [
   { _id: "rec1", recordType: "warrant", personId: "p4", personName: "Whitmore, Devon A", title: "Felony warrant - controlled substance",
     description: "Outstanding felony warrant, Genesee County. Confirmed via statewide index.",
-    issuingCourt: "Genesee County Circuit Court", status: "active" },
+    issuingCourt: "Genesee County 7th Circuit Court", status: "active" },
   { _id: "rec2", recordType: "parole", personId: "p1", personName: "Castillo, Marcus D", title: "Active parole",
     description: "Parole through 2027, reporting agent on file with MDOC.", status: "active" },
   { _id: "rec3", recordType: "probation", personId: "p4", personName: "Whitmore, Devon A", title: "Active probation (concurrent)",
@@ -189,24 +189,4 @@ export const seedRecords = [
     description: "Suspended, unpaid fines on file with 67th District Court.", status: "active" },
   { _id: "rec11", recordType: "stolenVehicle", vehicleId: "v6", vehicleLabel: "9PLM044 - Gray Jeep Grand Cherokee", title: "Stolen vehicle - entered statewide",
     description: "Reported stolen 08/11 from owner's residence on Corunna Rd. Entered into LEIN statewide index.", status: "active" }
-];
-
-// ---- Charge codes (arrest reports) — real MCL citations. Add more anytime
-// straight in Firestore under "chargeCodes"; the arrest form just reads
-// whatever's in that collection.
-export const seedChargeCodes = [
-  { name: "Assault and Battery", statute: "MCL 750.81", classification: "Misdemeanor" }
-];
-
-// ---- Citation codes (traffic/civil citations) — real MCL citations for
-// common Michigan moving violations. Add more the same way, under
-// "citationCodes" in Firestore.
-export const seedCitationCodes = [
-  { violation: "Basic speed law violation (careless/imprudent speed)", statute: "MCL 257.627(1)", classification: "Civil Infraction" },
-  { violation: "Exceeding posted speed limit", statute: "MCL 257.628", classification: "Civil Infraction" },
-  { violation: "Speeding in a school zone", statute: "MCL 257.627a", classification: "Civil Infraction" },
-  { violation: "Careless or negligent operation of a vehicle", statute: "MCL 257.626b", classification: "Civil Infraction" },
-  { violation: "Driving while license suspended/revoked (DWLS)", statute: "MCL 257.904", classification: "Misdemeanor" },
-  { violation: "No operator's license on person", statute: "MCL 257.311", classification: "Misdemeanor" },
-  { violation: "Expired registration", statute: "MCL 257.255", classification: "Civil Infraction" }
 ];

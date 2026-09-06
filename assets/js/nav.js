@@ -16,6 +16,7 @@
 import { resolveDepartment } from "./util.js";
 import { startSimEngine } from "./sim-engine.js";
 import { bootstrapMockData } from "./seeder.js";
+import { syncReferenceData } from "./reference-data.js";
 
 export const NAV_ITEMS = [
   { key: "dashboard", label: "Dashboard", href: "index.html" },
@@ -89,8 +90,12 @@ export function injectNav(activeKey) {
 
   // Every page bootstraps mock data (idempotent — only writes once ever)
   // and keeps the mock simulation running, so data stays alive no matter
-  // which page someone lands on first.
+  // which page someone lands on first. The charge/citation reference data
+  // sync runs independently — it's version-gated, not one-time-gated, so
+  // editing the XML files and bumping the version pushes updates even on
+  // a project that was already seeded long ago.
   bootstrapMockData().then(() => startSimEngine());
+  syncReferenceData();
 }
 
 export function updateNavUnit(unit) {

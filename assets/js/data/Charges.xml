@@ -1,0 +1,375 @@
+<!--
+    MICHIGAN CHARGE SET — researched from the Michigan Penal Code (MCL 750), Michigan
+    Vehicle Code (MCL 257), Public Health Code (MCL 333, Article 7 - Controlled
+    Substances), the Natural Resources and Environmental Protection Act / NREPA
+    (MCL 324), and related statutes, current as of the 2025-2026 legislative session.
+
+    Every charge name includes its real MCL citation. Fine and jail/prison figures
+    are the actual statutory maximums (and, where the law sets one, the statutory
+    minimum). A few things this file's format can't represent, so keep in mind:
+      - Many DNR/wildlife offenses also carry mandatory RESTITUTION on top of the
+        fine (e.g. $1,000+ per illegally taken deer, more if antlered) and loss of
+        hunting/fishing privileges for a period of years. Only the statutory fine
+        is reflected in the "fine" attribute.
+      - "probation_chance", "susp_chance", "revoke_chance" are gameplay
+        probabilities, not published Michigan statistics — Michigan does not
+        publish a % chance of probation per offense. Where a license sanction is
+        actually MANDATORY under MCL 257.319 (e.g., a 1st-offense OWI), the
+        chance is set to 100 with a fixed min/max to reflect that.
+      - Real Michigan sentencing also runs through the separate Michigan
+        Sentencing Guidelines (minimum-sentence ranges based on offense variables
+        and prior record), which this simple min/max-years format cannot fully
+        capture. Treat the min/max years here as the outer statutory range.
+      - Michigan legalized recreational marijuana for adults 21+ in 2018
+        (MRTMA/Prop 1). Simple possession within legal limits by an adult is NOT
+        a crime — the marijuana possession charges below only apply to minors,
+        amounts exceeding the legal limit, or unlicensed distribution.
+      - "Public Intoxication" is not a stand-alone Michigan crime — Michigan
+        decriminalized it in 1978. An intoxicated person may be taken into civil
+        protective custody (MCL 333.6501), but if they are actually charged it
+        will be for the underlying conduct (Disorderly Conduct, MDOP, etc.),
+        which is why you'll find that below instead of a "Public Intoxication"
+        charge.
+      - Michigan does not have separate criminal codes per county — county
+        sheriffs and city police both enforce the same statewide MCL. "County"
+        and "city" patrol charges are therefore the same state charges; the
+        difference is jurisdiction, not law. Distinct legal frameworks DO exist
+        for DNR conservation officers (NREPA, MCL 324) and Marine Safety
+        (boating, MCL 324.801xx), and those get their own groups below, plus a
+        group for the local ordinances a city/township patrol would actually
+        write (beach rules, noise, curfew, leash laws, etc.).
+
+    Acceptable attributes for each "Charge" tag:
+      - "name" is the charge name or title
+      - "traffic" determines whether the charge is in traffic category (true/false)
+      - "can_be_warrant" determines whether the charge will be included in the list of possible ped arrest warrant (true/false). If not set, default value is true.
+      - "susp_chance" probability of suspect's driver license gets suspended (0-100). This is only used when traffic="true"
+      - "min_susp" and "max_susp" is the range of driver license suspension time in months. This is only used when traffic="true"
+      - "revoke_chance" probability of suspect's driver license gets revoked (0-100). This is only used when traffic="true"
+      - "fine" is the maximum amount of fine money
+      - "fine_k" is the maximum amount of fine money in thousands
+      - "probation_chance" is chance percentage that the judge would grant probation
+      - "min_months" and "max_months" is range of jail time the suspect would get in months
+      - "min_years" and "max_years" is range of jail time the suspect would get in years
+
+    Note:
+      - You cannot use "fine" and "fine_k" in the same entry
+      - You cannot use "min_months-max_months" and "min_years-max_years" in the same entry)
+      - You can set "max_years" value with "life", if the charge has maximum sentence of life in prison
+      - If you don't want to apply fine or probation chance to a specified charge, just remove the attribute from the tag entry
+-->
+
+<CompuLiteCharges>
+
+	<ChargeGroup name="Traffic - Reckless &amp; Impaired Driving">
+		<Charge name="Reckless Driving (MCL 257.626)" traffic="true" fine="500" susp_chance="40" min_susp="3" max_susp="6" revoke_chance="5" probation_chance="60" min_months="0" max_months="3"/>
+		<Charge name="Reckless Driving Causing Serious Impairment (MCL 257.626(3))" traffic="true" fine_k="5" susp_chance="80" min_susp="12" max_susp="24" revoke_chance="40" probation_chance="20" min_years="0" max_years="5"/>
+		<Charge name="Reckless Driving Causing Death (MCL 257.626(4))" traffic="true" fine_k="10" susp_chance="0" revoke_chance="100" probation_chance="0" min_years="1" max_years="15"/>
+		<Charge name="Operating While Intoxicated - 1st Offense, OWI (MCL 257.625(1))" traffic="true" fine="500" susp_chance="100" min_susp="6" max_susp="6" revoke_chance="0" probation_chance="80" min_months="0" max_months="3"/>
+		<Charge name="Operating With High BAC / 'Super Drunk' - 1st Offense (MCL 257.625(1)(c))" traffic="true" fine="700" susp_chance="100" min_susp="12" max_susp="12" revoke_chance="0" probation_chance="80" min_months="0" max_months="6"/>
+		<Charge name="Operating While Visibly Impaired - OWVI (MCL 257.625(3))" traffic="true" fine="300" susp_chance="100" min_susp="3" max_susp="3" revoke_chance="0" probation_chance="80" min_months="0" max_months="3"/>
+		<Charge name="Operating While Intoxicated - 2nd Offense (MCL 257.625)" traffic="true" fine="1000" susp_chance="0" revoke_chance="100" min_susp="12" max_susp="12" probation_chance="60" min_months="5" max_months="12"/>
+		<Charge name="Operating While Intoxicated - 3rd Offense, Felony (MCL 257.625)" traffic="true" fine_k="5" susp_chance="0" revoke_chance="100" min_susp="12" max_susp="60" probation_chance="30" min_years="0" max_years="5"/>
+		<Charge name="Operating With Presence of a Schedule 1 Drug - OWPD (MCL 257.625(8))" traffic="true" fine="500" susp_chance="100" min_susp="6" max_susp="6" revoke_chance="0" probation_chance="80" min_months="0" max_months="3"/>
+		<Charge name="Zero-Tolerance Alcohol Violation, Driver Under 21 (MCL 257.625(6))" traffic="true" can_be_warrant="false" fine="250" susp_chance="100" min_susp="1" max_susp="2" revoke_chance="0" probation_chance="90"/>
+		<Charge name="OWI Causing Serious Injury (MCL 257.625(5))" traffic="true" fine_k="5" susp_chance="0" revoke_chance="100" min_susp="12" max_susp="60" probation_chance="20" min_years="0" max_years="5"/>
+		<Charge name="OWI Causing Death (MCL 257.625(4))" traffic="true" fine_k="10" susp_chance="0" revoke_chance="100" min_susp="12" max_susp="60" probation_chance="0" min_years="2" max_years="15"/>
+		<Charge name="Child Endangerment During OWI, Passenger Under 16 (MCL 257.625(7))" traffic="true" fine="1000" susp_chance="100" min_susp="6" max_susp="12" revoke_chance="0" probation_chance="60" min_months="0" max_months="12"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="Traffic - Fleeing, Eluding &amp; License Violations">
+		<Charge name="Fleeing &amp; Eluding a Police Officer - 4th Degree (MCL 257.602a(2))" traffic="true" fine="2000" susp_chance="100" min_susp="12" max_susp="12" revoke_chance="0" probation_chance="40" min_years="0" max_years="2"/>
+		<Charge name="Fleeing &amp; Eluding a Police Officer - 3rd Degree (MCL 257.602a(3))" traffic="true" fine_k="5" susp_chance="100" min_susp="12" max_susp="12" revoke_chance="0" probation_chance="30" min_years="0" max_years="5"/>
+		<Charge name="Fleeing &amp; Eluding a Police Officer - 2nd Degree, Serious Injury (MCL 257.602a(4))" traffic="true" fine_k="10" susp_chance="0" revoke_chance="100" probation_chance="10" min_years="0" max_years="10"/>
+		<Charge name="Fleeing &amp; Eluding a Police Officer - 1st Degree, Death (MCL 257.602a(5))" traffic="true" fine_k="10" susp_chance="0" revoke_chance="100" probation_chance="0" min_years="1" max_years="15"/>
+		<Charge name="Driving While License Suspended or Revoked - 1st Offense (MCL 257.904(1))" traffic="true" fine="500" susp_chance="100" min_susp="6" max_susp="12" revoke_chance="10" probation_chance="60" min_months="0" max_months="3"/>
+		<Charge name="Driving While License Suspended or Revoked - Habitual/Felony (MCL 257.904(3))" traffic="true" fine_k="1" susp_chance="0" revoke_chance="100" probation_chance="40" min_months="0" max_months="12"/>
+		<Charge name="Driving While License Suspended or Revoked, Causing Death (MCL 257.904(4))" traffic="true" fine_k="5" susp_chance="0" revoke_chance="100" probation_chance="10" min_years="0" max_years="5"/>
+		<Charge name="Driving Without Ever Having Obtained a License (MCL 257.301)" traffic="true" can_be_warrant="false" fine="500" susp_chance="10" min_susp="1" max_susp="3" probation_chance="80"/>
+		<Charge name="Leaving the Scene of an Accident - Property Damage (MCL 257.618)" traffic="true" fine="1000" susp_chance="30" min_susp="3" max_susp="6" revoke_chance="0" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Leaving the Scene of an Accident - Injury (MCL 257.617a)" traffic="true" fine_k="5" susp_chance="80" min_susp="6" max_susp="12" revoke_chance="10" probation_chance="30" min_years="0" max_years="5"/>
+		<Charge name="Leaving the Scene of an Accident - Death (MCL 257.617)" traffic="true" fine_k="10" susp_chance="0" revoke_chance="100" probation_chance="0" min_years="1" max_years="15"/>
+		<Charge name="Drag Racing / Reckless Exhibition of Speed (MCL 257.626d)" traffic="true" can_be_warrant="false" fine="300" susp_chance="25" min_susp="1" max_susp="3" revoke_chance="0" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Failure to Stop for a School Bus, Causing Injury (MCL 257.682)" traffic="true" fine="1000" susp_chance="50" min_susp="3" max_susp="6" revoke_chance="5" probation_chance="60" min_months="0" max_months="12"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="Property Crimes - Arson">
+		<Charge name="Arson - 1st Degree, Dwelling or Causing Injury (MCL 750.72)" fine_k="20" probation_chance="0" min_years="10" max_years="life"/>
+		<Charge name="Arson - 2nd Degree, Other Real Property (MCL 750.73)" fine_k="20" probation_chance="5" min_years="0" max_years="10"/>
+		<Charge name="Arson - 3rd Degree, Personal Property $20,000+ (MCL 750.74)" fine_k="20" probation_chance="10" min_years="0" max_years="10"/>
+		<Charge name="Arson - 4th Degree, Personal Property Under $20,000 (MCL 750.75)" fine_k="10" probation_chance="20" min_months="0" max_months="12"/>
+		<Charge name="Arson of an Insured Dwelling, Insurance Fraud (MCL 750.76)" fine_k="20" probation_chance="0" min_years="0" max_years="life"/>
+		<Charge name="Arson - 5th Degree, Repeat Offender (MCL 750.77)" fine="2000" probation_chance="30" min_months="0" max_months="12"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="Property Crimes - Burglary &amp; Home Invasion">
+		<Charge name="Home Invasion - 1st Degree, Armed or Person Present (MCL 750.110a(2))" fine_k="5" probation_chance="0" min_years="0" max_years="20"/>
+		<Charge name="Home Invasion - 2nd Degree (MCL 750.110a(3))" fine_k="3" probation_chance="5" min_years="0" max_years="15"/>
+		<Charge name="Home Invasion - 3rd Degree (MCL 750.110a(4))" fine_k="2" probation_chance="30" min_years="0" max_years="5"/>
+		<Charge name="Breaking &amp; Entering a Building With Intent (MCL 750.110)" fine_k="10" probation_chance="15" min_years="0" max_years="10"/>
+		<Charge name="Entering Without Breaking / Unlawful Entry (MCL 750.111)" fine_k="5" probation_chance="30" min_years="0" max_years="5"/>
+		<Charge name="Breaking &amp; Entering a Motor Vehicle to Steal (MCL 750.356a)" fine_k="1" probation_chance="40" min_months="0" max_months="12"/>
+		<Charge name="Possession of Burglary Tools (MCL 750.116)" fine="1000" probation_chance="50" min_months="0" max_months="6"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="Property Crimes - Malicious Destruction &amp; Vandalism">
+		<Charge name="Malicious Destruction of Property - Under $200 (MCL 750.377a(1)(d))" can_be_warrant="false" fine="500" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Malicious Destruction of Property - $200 to $1,000 (MCL 750.377a(1)(c))" fine="2000" probation_chance="60" min_months="0" max_months="12"/>
+		<Charge name="Malicious Destruction of Property - $1,000 to $20,000 (MCL 750.377a(1)(b))" fine_k="10" probation_chance="30" min_years="0" max_years="5"/>
+		<Charge name="Malicious Destruction of Property - $20,000 or More (MCL 750.377a(1)(a))" fine_k="15" probation_chance="10" min_years="0" max_years="10"/>
+		<Charge name="Malicious Destruction of a Building (MCL 750.380)" fine_k="10" probation_chance="20" min_years="0" max_years="10"/>
+		<Charge name="Malicious Destruction of Police, Fire or EMS Equipment (MCL 750.377b)" fine_k="10" probation_chance="10" min_years="0" max_years="4"/>
+		<Charge name="Graffiti / Malicious Destruction by Marking Property (MCL 750.380a)" fine="2000" probation_chance="50" min_months="0" max_months="6"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="Property Crimes - Theft, Larceny &amp; Stolen Property">
+		<Charge name="Larceny - Under $200 (MCL 750.356(5))" can_be_warrant="false" fine="500" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Larceny - $200 to $1,000 (MCL 750.356(4))" fine="2000" probation_chance="60" min_months="0" max_months="12"/>
+		<Charge name="Larceny - $1,000 to $20,000 (MCL 750.356(3))" fine_k="10" probation_chance="30" min_years="0" max_years="5"/>
+		<Charge name="Larceny - $20,000 or More (MCL 750.356(2))" fine_k="15" probation_chance="10" min_years="0" max_years="10"/>
+		<Charge name="Larceny From a Person / Pickpocketing (MCL 750.357)" fine_k="10" probation_chance="10" min_years="0" max_years="10"/>
+		<Charge name="Larceny in a Building (MCL 750.360)" fine_k="4" probation_chance="30" min_years="0" max_years="4"/>
+		<Charge name="Larceny of a Firearm (MCL 750.357b)" fine_k="5" probation_chance="10" min_years="0" max_years="5"/>
+		<Charge name="Unlawfully Driving Away an Automobile / Joyriding (MCL 750.413)" fine_k="5" probation_chance="30" min_years="0" max_years="5"/>
+		<Charge name="Receiving &amp; Concealing Stolen Property - Under $200 (MCL 750.535(6))" can_be_warrant="false" fine="500" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Receiving &amp; Concealing Stolen Property - $200 to $1,000 (MCL 750.535(4))" fine="2000" probation_chance="60" min_months="0" max_months="12"/>
+		<Charge name="Receiving &amp; Concealing Stolen Property - $1,000 to $20,000 (MCL 750.535(3))" fine_k="10" probation_chance="30" min_years="0" max_years="5"/>
+		<Charge name="Receiving &amp; Concealing a Stolen Motor Vehicle / Property $20,000+ (MCL 750.535(2)/(7))" fine_k="15" probation_chance="10" min_years="0" max_years="10"/>
+		<Charge name="Retail Fraud - 3rd Degree, Under $200 (MCL 750.356d(4))" can_be_warrant="false" fine="500" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Retail Fraud - 2nd Degree, $200 to $1,000 (MCL 750.356d(1))" fine="2000" probation_chance="60" min_months="0" max_months="12"/>
+		<Charge name="Retail Fraud - 1st Degree, $1,000+ or Repeat Offense (MCL 750.356c)" fine_k="10" probation_chance="30" min_years="0" max_years="5"/>
+		<Charge name="Embezzlement by Agent/Employee - Under $20,000 (MCL 750.174)" fine_k="10" probation_chance="30" min_years="0" max_years="5"/>
+		<Charge name="Embezzlement by Agent/Employee - $20,000 to $100,000 (MCL 750.174(5))" fine_k="15" probation_chance="15" min_years="0" max_years="10"/>
+		<Charge name="Embezzlement by Agent/Employee - $100,000 or More (MCL 750.174(6))" fine_k="15" probation_chance="5" min_years="0" max_years="20"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="Fraud, Forgery &amp; White Collar Crime">
+		<Charge name="False Pretenses / Fraud - Under $200 (MCL 750.218)" can_be_warrant="false" fine="500" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="False Pretenses / Fraud - $1,000 to $20,000 (MCL 750.218)" fine_k="10" probation_chance="30" min_years="0" max_years="5"/>
+		<Charge name="False Pretenses / Fraud - $20,000 or More (MCL 750.218)" fine_k="15" probation_chance="10" min_years="0" max_years="10"/>
+		<Charge name="Forgery of a Document (MCL 750.248)" fine_k="10" probation_chance="20" min_years="0" max_years="14"/>
+		<Charge name="Uttering &amp; Publishing a Forged Document (MCL 750.249)" fine_k="10" probation_chance="20" min_years="0" max_years="14"/>
+		<Charge name="Identity Theft (MCL 445.65)" fine_k="25" probation_chance="20" min_years="0" max_years="5"/>
+		<Charge name="Unlawful Use of a Financial Transaction Device, Credit Card Fraud (MCL 750.157n)" fine_k="10" probation_chance="30" min_years="0" max_years="4"/>
+		<Charge name="Extortion (MCL 750.213)" fine_k="10" probation_chance="5" min_years="0" max_years="20"/>
+		<Charge name="Insurance Fraud (MCL 500.4503)" fine_k="10" probation_chance="30" min_years="0" max_years="4"/>
+		<Charge name="Welfare / Public Assistance Fraud (MCL 400.60)" fine_k="5" probation_chance="40" min_months="0" max_months="12"/>
+		<Charge name="Counterfeiting / Possessing Forged Currency (MCL 750.253)" fine_k="10" probation_chance="10" min_years="0" max_years="10"/>
+		<Charge name="Bribery of a Public Official (MCL 750.117)" fine_k="10" probation_chance="10" min_years="0" max_years="10"/>
+		<Charge name="Racketeering / Directing a Criminal Enterprise (MCL 750.159i)" fine_k="10" probation_chance="0" min_years="0" max_years="20"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="Controlled Substances - Possession">
+		<Charge name="Marijuana Possession Exceeding the Legal Limit, Adult 21+ (MRTMA / MCL 333.27955)" can_be_warrant="false" fine="500" probation_chance="90"/>
+		<Charge name="Marijuana Possession or Consumption, Minor Under 21 (MCL 333.27665)" can_be_warrant="false" fine="100" probation_chance="90"/>
+		<Charge name="Providing Marijuana to a Minor (MCL 333.27963)" fine_k="4" probation_chance="20" min_years="0" max_years="4"/>
+		<Charge name="Possession of Marihuana, Unlawful Distribution Context (MCL 333.7403(2)(d))" fine_k="2" probation_chance="60" min_months="0" max_months="12"/>
+		<Charge name="Possession of LSD, Peyote, Psilocybin or Schedule 5 Drugs (MCL 333.7403(2)(c))" fine_k="2" probation_chance="60" min_months="0" max_months="12"/>
+		<Charge name="Possession of a Schedule 1-4 Controlled Substance, General (MCL 333.7403(2)(b)(ii))" fine_k="2" probation_chance="40" min_years="0" max_years="2"/>
+		<Charge name="Possession of Methamphetamine or Ecstasy/MDMA (MCL 333.7403(2)(b)(i))" fine_k="10" probation_chance="30" min_years="0" max_years="10"/>
+		<Charge name="Possession of Cocaine, Heroin or Fentanyl - Under 50 Grams (MCL 333.7403(2)(a)(iv)/(v))" fine_k="25" probation_chance="30" min_years="0" max_years="4"/>
+		<Charge name="Possession of Cocaine, Heroin or Fentanyl - 50 to 450 Grams (MCL 333.7403(2)(a)(iii))" fine_k="250" probation_chance="10" min_years="0" max_years="20"/>
+		<Charge name="Possession of Cocaine, Heroin or Fentanyl - 450 to 1,000 Grams (MCL 333.7403(2)(a)(ii))" fine_k="500" probation_chance="0" min_years="0" max_years="30"/>
+		<Charge name="Possession of Cocaine, Heroin or Fentanyl - 1,000 Grams or More (MCL 333.7403(2)(a)(i))" fine_k="1000" probation_chance="0" min_years="10" max_years="life"/>
+		<Charge name="Possession of a Forged or Fraudulent Prescription Form (MCL 333.7403(2)(e))" fine="1000" probation_chance="50" min_months="0" max_months="12"/>
+		<Charge name="Possession of Drug Paraphernalia (MCL 333.7453)" can_be_warrant="false" fine="100" probation_chance="90"/>
+		<Charge name="Maintaining a Drug House or Vehicle (MCL 333.7405)" fine_k="5" probation_chance="30" min_years="0" max_years="2"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="Controlled Substances - Manufacture &amp; Delivery">
+		<Charge name="Delivery/Manufacture of Marijuana (MCL 333.7401(2)(d))" fine_k="20" probation_chance="30" min_years="0" max_years="4"/>
+		<Charge name="Delivery/Manufacture of Marijuana - 45kg or More (MCL 333.7401(2)(d)(i))" fine_k="20" probation_chance="10" min_years="0" max_years="7"/>
+		<Charge name="Delivery/Manufacture of Methamphetamine (MCL 333.7401(2)(b)(i))" fine_k="25" probation_chance="10" min_years="0" max_years="20"/>
+		<Charge name="Delivery/Manufacture of a Schedule 1-4 Controlled Substance, General (MCL 333.7401(2)(c))" fine_k="10" probation_chance="20" min_years="0" max_years="7"/>
+		<Charge name="Delivery/Manufacture of Cocaine, Heroin or Fentanyl - Under 50 Grams (MCL 333.7401(2)(a)(iv))" fine_k="25" probation_chance="10" min_years="0" max_years="20"/>
+		<Charge name="Delivery/Manufacture of Cocaine, Heroin or Fentanyl - 50 to 450 Grams (MCL 333.7401(2)(a)(iii))" fine_k="250" probation_chance="5" min_years="0" max_years="20"/>
+		<Charge name="Delivery/Manufacture of Cocaine, Heroin or Fentanyl - 450 to 1,000 Grams (MCL 333.7401(2)(a)(ii))" fine_k="500" probation_chance="0" min_years="0" max_years="30"/>
+		<Charge name="Delivery/Manufacture of Cocaine, Heroin or Fentanyl - 1,000 Grams or More (MCL 333.7401(2)(a)(i))" fine_k="1000" probation_chance="0" min_years="10" max_years="life"/>
+		<Charge name="Delivery of a Controlled Substance Causing Death (MCL 750.317a)" fine_k="20" probation_chance="0" min_years="5" max_years="life"/>
+		<Charge name="Operating or Possessing a Methamphetamine Laboratory (MCL 333.7401c)" fine_k="10" probation_chance="10" min_years="0" max_years="10"/>
+		<Charge name="Possession With Intent to Deliver a Controlled Substance (MCL 333.7401)" fine_k="20" probation_chance="20" min_years="0" max_years="7"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="Weapons Offenses">
+		<Charge name="Carrying a Concealed Weapon Without a License, CCW (MCL 750.227)" fine_k="2" probation_chance="30" min_years="0" max_years="5"/>
+		<Charge name="Felon in Possession of a Firearm (MCL 750.224f)" fine_k="5" probation_chance="10" min_years="0" max_years="5"/>
+		<Charge name="Felon in Possession of Body Armor (MCL 750.227g)" fine_k="2" probation_chance="20" min_years="0" max_years="4"/>
+		<Charge name="Possession of a Firearm During a Felony, Felony Firearm - 1st Offense (MCL 750.227b)" probation_chance="0" min_years="2" max_years="2"/>
+		<Charge name="Possession of a Firearm During a Felony, Felony Firearm - 2nd Offense (MCL 750.227b)" probation_chance="0" min_years="5" max_years="5"/>
+		<Charge name="Possession of a Firearm During a Felony, Felony Firearm - 3rd+ Offense (MCL 750.227b)" probation_chance="0" min_years="10" max_years="10"/>
+		<Charge name="Carrying a Firearm or Dangerous Weapon With Unlawful Intent (MCL 750.226)" fine="2500" probation_chance="20" min_years="0" max_years="5"/>
+		<Charge name="Brandishing a Firearm in Public (MCL 750.234e)" can_be_warrant="false" fine="100" probation_chance="60" min_months="0" max_months="3"/>
+		<Charge name="Discharge of a Firearm in or at a Building (MCL 750.234b)" fine_k="2" probation_chance="30" min_years="0" max_years="4"/>
+		<Charge name="Discharge of a Firearm in or at a Building Causing Injury (MCL 750.234b(2))" fine_k="6" probation_chance="10" min_years="0" max_years="10"/>
+		<Charge name="Discharging a Firearm at a Peace Officer or Emergency Responder (MCL 750.234c)" fine_k="6" probation_chance="0" min_years="2" max_years="15"/>
+		<Charge name="Careless or Reckless Discharge of a Firearm Causing Injury (MCL 752.861)" fine="2000" probation_chance="30" min_years="0" max_years="2"/>
+		<Charge name="Careless or Reckless Discharge of a Firearm Causing Death (MCL 752.861)" fine_k="2" probation_chance="10" min_years="0" max_years="2"/>
+		<Charge name="Pointing a Firearm at Another Person (MCL 750.233)" can_be_warrant="false" fine="100" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Possession of a Short-Barreled Shotgun or Rifle (MCL 750.224b)" fine_k="5" probation_chance="20" min_years="0" max_years="5"/>
+		<Charge name="Possession of a Machine Gun or Automatic Weapon (MCL 750.224)" fine_k="10" probation_chance="10" min_years="0" max_years="10"/>
+		<Charge name="Altering or Removing a Firearm's Serial Number (MCL 750.230)" fine_k="5" probation_chance="20" min_years="0" max_years="5"/>
+		<Charge name="Improper Transport of a Loaded Firearm in a Vehicle (MCL 750.227c)" can_be_warrant="false" fine="100" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Possession of a Firearm on School Property (MCL 750.237a)" fine_k="2" probation_chance="20" min_years="0" max_years="4"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="Assault &amp; Battery">
+		<Charge name="Assault or Assault &amp; Battery, Simple (MCL 750.81)" can_be_warrant="false" fine="500" probation_chance="60" min_months="0" max_months="3"/>
+		<Charge name="Aggravated Assault, Serious Injury Without a Weapon (MCL 750.81a)" fine="1000" probation_chance="40" min_months="0" max_months="12"/>
+		<Charge name="Felonious Assault / Assault With a Dangerous Weapon (MCL 750.82)" fine_k="2" probation_chance="20" min_years="0" max_years="4"/>
+		<Charge name="Felonious Assault in a Weapon-Free School Zone (MCL 750.82(2))" fine_k="4" probation_chance="10" min_years="0" max_years="6"/>
+		<Charge name="Assault With Intent to Commit Murder (MCL 750.83)" fine_k="10" probation_chance="0" min_years="10" max_years="life"/>
+		<Charge name="Assault With Intent to Do Great Bodily Harm Less Than Murder (MCL 750.84)" fine_k="10" probation_chance="0" min_years="0" max_years="10"/>
+		<Charge name="Assault by Strangulation or Suffocation (MCL 750.84(1)(b))" fine_k="10" probation_chance="0" min_years="0" max_years="10"/>
+		<Charge name="Assault With Intent to Maim (MCL 750.86)" fine_k="10" probation_chance="0" min_years="0" max_years="10"/>
+		<Charge name="Assault With Intent to Rob While Armed (MCL 750.89)" fine_k="10" probation_chance="0" min_years="0" max_years="life"/>
+		<Charge name="Mayhem (MCL 750.397)" fine_k="10" probation_chance="0" min_years="0" max_years="10"/>
+		<Charge name="Torture (MCL 750.85)" fine_k="10" probation_chance="0" min_years="10" max_years="life"/>
+		<Charge name="Assaulting, Battering, Resisting or Obstructing a Police Officer (MCL 750.81d(1))" fine_k="2" probation_chance="30" min_years="0" max_years="2"/>
+		<Charge name="Assaulting or Resisting a Police Officer, Causing Injury (MCL 750.81d(2))" fine_k="5" probation_chance="10" min_years="0" max_years="4"/>
+		<Charge name="Assault/Battery of a Utility Worker or Contractor (MCL 750.81e)" fine="1000" probation_chance="40" min_months="0" max_months="12"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="Domestic Violence &amp; Family Offenses">
+		<Charge name="Domestic Assault - 1st Offense (MCL 750.81(2))" can_be_warrant="false" fine="500" probation_chance="60" min_months="0" max_months="3"/>
+		<Charge name="Domestic Assault - 2nd Offense (MCL 750.81(3))" fine="1000" probation_chance="40" min_months="0" max_months="12"/>
+		<Charge name="Domestic Assault - 3rd or Subsequent Offense, Felony (MCL 750.81(4))" fine_k="5" probation_chance="20" min_years="0" max_years="5"/>
+		<Charge name="Aggravated Domestic Assault, Serious Injury (MCL 750.81a(2))" fine_k="10" probation_chance="10" min_years="0" max_years="10"/>
+		<Charge name="Violation of a Personal Protection Order, PPO (MCL 764.15b)" fine="500" probation_chance="50" min_months="0" max_months="12"/>
+		<Charge name="Child Abuse - 1st Degree (MCL 750.136b(2))" fine_k="10" probation_chance="0" min_years="0" max_years="15"/>
+		<Charge name="Child Abuse - 2nd Degree (MCL 750.136b(3))" fine_k="10" probation_chance="5" min_years="0" max_years="10"/>
+		<Charge name="Child Abuse - 3rd Degree (MCL 750.136b(5))" fine_k="2" probation_chance="30" min_years="0" max_years="2"/>
+		<Charge name="Child Abuse - 4th Degree (MCL 750.136b(7))" fine="500" probation_chance="60" min_months="0" max_months="12"/>
+		<Charge name="Vulnerable Adult Abuse (MCL 750.145n)" fine_k="5" probation_chance="20" min_years="0" max_years="15"/>
+		<Charge name="Contributing to the Delinquency of a Minor (MCL 750.145)" can_be_warrant="false" fine="500" probation_chance="60" min_months="0" max_months="12"/>
+		<Charge name="Hosting/Allowing a Minor to Consume Alcohol, Social Host Law (MCL 436.1701)" can_be_warrant="false" fine="1000" probation_chance="60" min_months="0" max_months="2"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="Homicide">
+		<Charge name="1st Degree Murder (MCL 750.316)" fine_k="10" probation_chance="0" min_years="25" max_years="life"/>
+		<Charge name="Felony Murder (MCL 750.316(1)(b))" fine_k="10" probation_chance="0" min_years="25" max_years="life"/>
+		<Charge name="2nd Degree Murder (MCL 750.317)" fine_k="10" probation_chance="0" min_years="10" max_years="life"/>
+		<Charge name="Attempted Murder (MCL 750.91/750.316)" fine_k="10" probation_chance="0" min_years="5" max_years="life"/>
+		<Charge name="Solicitation or Conspiracy to Commit Murder (MCL 750.157a/750.157b)" fine_k="10" probation_chance="0" min_years="10" max_years="life"/>
+		<Charge name="Voluntary Manslaughter (MCL 750.321)" fine_k="10" probation_chance="0" min_years="0" max_years="15"/>
+		<Charge name="Involuntary Manslaughter (MCL 750.321)" fine_k="10" probation_chance="5" min_years="0" max_years="15"/>
+		<Charge name="Negligent Homicide, Vehicle-Related (MCL 750.324)" fine_k="2" probation_chance="30" min_years="0" max_years="2"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="Sexual Offenses">
+		<Charge name="Criminal Sexual Conduct - 1st Degree (MCL 750.520b)" fine_k="10" probation_chance="0" min_years="0" max_years="life"/>
+		<Charge name="Criminal Sexual Conduct - 2nd Degree (MCL 750.520c)" fine_k="10" probation_chance="0" min_years="0" max_years="15"/>
+		<Charge name="Criminal Sexual Conduct - 3rd Degree (MCL 750.520d)" fine_k="10" probation_chance="0" min_years="0" max_years="15"/>
+		<Charge name="Criminal Sexual Conduct - 4th Degree (MCL 750.520e)" fine="500" probation_chance="30" min_months="0" max_months="24"/>
+		<Charge name="Assault With Intent to Commit CSC Involving Penetration (MCL 750.520g(1))" fine_k="5" probation_chance="0" min_years="0" max_years="10"/>
+		<Charge name="Assault With Intent to Commit CSC - 2nd Degree (MCL 750.520g(2))" fine_k="5" probation_chance="0" min_years="0" max_years="5"/>
+		<Charge name="Indecent Exposure (MCL 750.335a)" can_be_warrant="false" fine="1000" probation_chance="40" min_months="0" max_months="12"/>
+		<Charge name="Aggravated Indecent Exposure, Sexually Delinquent Person (MCL 750.335a(2))" fine_k="2" probation_chance="10" min_years="0" max_years="15"/>
+		<Charge name="Accosting, Enticing or Soliciting a Minor for Immoral Purposes (MCL 750.145a)" fine_k="2" probation_chance="10" min_years="0" max_years="4"/>
+		<Charge name="Pandering (MCL 750.455)" fine_k="10" probation_chance="10" min_years="0" max_years="20"/>
+		<Charge name="Soliciting or Accosting for Prostitution (MCL 750.448)" can_be_warrant="false" fine="500" probation_chance="60" min_months="0" max_months="12"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="Robbery, Carjacking &amp; Kidnapping">
+		<Charge name="Armed Robbery (MCL 750.529)" fine_k="10" probation_chance="0" min_years="0" max_years="life"/>
+		<Charge name="Unarmed Robbery (MCL 750.530)" fine_k="10" probation_chance="0" min_years="0" max_years="15"/>
+		<Charge name="Carjacking (MCL 750.529a)" fine_k="10" probation_chance="0" min_years="0" max_years="life"/>
+		<Charge name="Bank, Safe or Vault Robbery (MCL 750.531)" fine_k="10" probation_chance="0" min_years="5" max_years="life"/>
+		<Charge name="Kidnapping (MCL 750.349)" fine_k="10" probation_chance="0" min_years="5" max_years="life"/>
+		<Charge name="Child Kidnapping / Enticing a Child Away (MCL 750.350)" fine_k="10" probation_chance="0" min_years="5" max_years="life"/>
+		<Charge name="Unlawful Imprisonment (MCL 750.349b)" fine_k="10" probation_chance="0" min_years="0" max_years="15"/>
+		<Charge name="Attempted Kidnapping (MCL 750.92/750.349)" fine_k="5" probation_chance="0" min_years="0" max_years="10"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="Public Order &amp; Non-Violent Crimes">
+		<Charge name="Disorderly Conduct (MCL 750.167)" can_be_warrant="false" fine="500" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Trespassing (MCL 750.552)" can_be_warrant="false" fine="250" probation_chance="70" min_months="0" max_months="1"/>
+		<Charge name="Impersonating a Peace/Police Officer (MCL 750.215)" fine="1000" probation_chance="40" min_months="0" max_months="12"/>
+		<Charge name="False Report of a Felony (MCL 750.411a(1)(b))" fine="500" probation_chance="50" min_months="0" max_months="6"/>
+		<Charge name="False Report of a Misdemeanor (MCL 750.411a(1)(a))" can_be_warrant="false" fine="500" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Obstruction of Justice / Interfering With a Police Investigation (MCL 750.483a)" fine_k="5" probation_chance="30" min_years="0" max_years="5"/>
+		<Charge name="Witness Tampering or Intimidation (MCL 750.122)" fine_k="10" probation_chance="20" min_years="0" max_years="15"/>
+		<Charge name="Perjury (MCL 750.423)" fine_k="10" probation_chance="10" min_years="0" max_years="15"/>
+		<Charge name="Prison or Jail Escape (MCL 750.193)" fine_k="2" probation_chance="10" min_years="0" max_years="4"/>
+		<Charge name="Aiding the Escape of a Prisoner (MCL 750.183)" fine_k="5" probation_chance="10" min_years="0" max_years="10"/>
+		<Charge name="Abuse of the 911 Emergency System (MCL 750.509o)" can_be_warrant="false" fine="500" probation_chance="60" min_months="0" max_months="3"/>
+		<Charge name="Stalking (MCL 750.411h)" fine="1000" probation_chance="40" min_months="0" max_months="12"/>
+		<Charge name="Aggravated Stalking (MCL 750.411i)" fine_k="10" probation_chance="10" min_years="0" max_years="5"/>
+		<Charge name="Animal Cruelty or Torture (MCL 750.50b)" fine_k="5" probation_chance="20" min_years="0" max_years="4"/>
+		<Charge name="Warrant for Arrest, Outstanding Bench Warrant" can_be_warrant="false" fine_k="3" probation_chance="10" min_years="0" max_years="5"/>
+		<Charge name="Failure to Appear for a Scheduled Court Date (MCL 750.199a)" can_be_warrant="false" fine_k="1" probation_chance="30" min_years="0" max_years="4"/>
+		<Charge name="Probation or Parole Violation" can_be_warrant="false" probation_chance="10" min_months="0" max_months="12"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="Riot &amp; Civil Disorder">
+		<Charge name="Inciting a Riot (MCL 752.542)" fine_k="10" probation_chance="10" min_years="0" max_years="10"/>
+		<Charge name="Participating in a Riot (MCL 752.543)" fine_k="10" probation_chance="20" min_years="0" max_years="10"/>
+		<Charge name="Failure to Disperse From an Unlawful Assembly (MCL 752.544)" can_be_warrant="false" fine="500" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Obstructing a Roadway During an Unpermitted Assembly (Local Ordinance)" can_be_warrant="false" fine="500" probation_chance="80" min_months="0" max_months="1"/>
+		<Charge name="Looting During a State of Emergency (MCL 752.1082)" fine_k="10" probation_chance="10" min_years="0" max_years="4"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="DNR - Hunting &amp; Fishing Violations (NREPA)">
+		<Charge name="Hunting Without a License (MCL 324.43533)" can_be_warrant="false" fine="500" probation_chance="80" min_months="0" max_months="3"/>
+		<Charge name="Fishing Without a License (MCL 324.48737)" can_be_warrant="false" fine="500" probation_chance="80" min_months="0" max_months="3"/>
+		<Charge name="Hunting or Fishing During a Closed Season (MCL 324.40118)" can_be_warrant="false" fine="500" probation_chance="80" min_months="0" max_months="3"/>
+		<Charge name="Illegal Take or Possession of a Deer, No Antlers (MCL 324.40118)" fine="1000" probation_chance="60" min_months="0" max_months="3"/>
+		<Charge name="Illegal Take or Possession of an Antlered Deer, Trophy Poaching (MCL 324.40118/40119)" fine="2000" probation_chance="40" min_months="0" max_months="6"/>
+		<Charge name="Illegal Take or Possession of an Elk (MCL 324.40118(4))" fine="2000" probation_chance="40" min_months="0" max_months="6"/>
+		<Charge name="Illegal Take or Possession of a Bear (MCL 324.40118)" fine="1500" probation_chance="40" min_months="0" max_months="3"/>
+		<Charge name="Illegal Take or Possession of a Wild Turkey or Waterfowl (MCL 324.40118)" fine="1000" probation_chance="60" min_months="0" max_months="3"/>
+		<Charge name="Illegal Take or Possession of a Moose or Endangered Species (MCL 324.40118/324.36505)" fine_k="5" probation_chance="20" min_months="0" max_months="6"/>
+		<Charge name="Taking Game From a Motor Vehicle (MCL 324.40111)" fine="1000" probation_chance="60" min_months="0" max_months="3"/>
+		<Charge name="Illegal Use of Artificial Light to Take Game, Shining/Spotlighting (MCL 324.40111c)" fine="500" probation_chance="60" min_months="0" max_months="3"/>
+		<Charge name="Trespassing While Hunting on Posted Land (MCL 324.73102)" can_be_warrant="false" fine="500" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Taking or Possessing Game Over the Legal Limit (MCL 324.40118)" can_be_warrant="false" fine="500" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Illegal Sale or Commercialization of Game (MCL 324.40114)" fine_k="2" probation_chance="30" min_years="0" max_years="2"/>
+		<Charge name="Hunting or Fishing License Fraud, Using Another Person's License (MCL 324.43539)" fine="500" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Illegal Commercial Fishing / Unlawful Netting (MCL 324.48739)" fine_k="2" probation_chance="40" min_months="0" max_months="6"/>
+		<Charge name="Baiting or Feeding Deer in a Restricted Area (MCL 324.40113a)" can_be_warrant="false" fine="250" probation_chance="80"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="DNR - Land, ORV, Snowmobile &amp; Conservation Orders">
+		<Charge name="Violation of a DNR Director's or Natural Resources Commission Order (MCL 324.1701)" can_be_warrant="false" fine="500" probation_chance="80" min_months="0" max_months="3"/>
+		<Charge name="Illegal Camping in a State Park or State Forest (MCL 324.503)" can_be_warrant="false" fine="500" probation_chance="80" min_months="0" max_months="3"/>
+		<Charge name="Reckless Operation of an Off-Road Vehicle, ORV (MCL 324.81131)" fine="500" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Operating an ORV Under the Influence (MCL 324.81134)" fine="500" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Operating an ORV on a Closed Trail or Private Land Without Permission (MCL 324.81121)" can_be_warrant="false" fine="500" probation_chance="80" min_months="0" max_months="1"/>
+		<Charge name="Reckless Operation of a Snowmobile (MCL 324.82127)" fine="500" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Operating a Snowmobile Under the Influence (MCL 324.82127)" fine="500" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Illegal Dumping / Improper Waste Disposal, Large Scale (MCL 324.11151)" fine_k="25" probation_chance="20" min_years="0" max_years="2"/>
+		<Charge name="Littering (MCL 324.8905)" can_be_warrant="false" fine="800" probation_chance="80" min_months="0" max_months="3"/>
+		<Charge name="Timber Trespass / Illegal Cutting on Public Land (MCL 324.73505)" fine_k="5" probation_chance="40" min_months="0" max_months="12"/>
+		<Charge name="Unauthorized Development in a Sand Dune or Wetland Area (MCL 324.35304/324.30304)" can_be_warrant="false" fine="2500" probation_chance="60" min_months="0" max_months="3"/>
+		<Charge name="Removing Historic or Archaeological Artifacts From State Land (MCL 324.76112)" fine_k="2" probation_chance="40" min_months="0" max_months="12"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="Marine Patrol - Boating &amp; Watercraft">
+		<Charge name="Operating a Motorboat While Under the Influence, BUI - 1st Offense (MCL 324.80176/80177)" fine="500" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Operating a Motorboat While Under the Influence, BUI - 2nd Offense (MCL 324.80177)" fine_k="1" probation_chance="50" min_months="0" max_months="12"/>
+		<Charge name="Operating a Motorboat Under the Influence, Causing Serious Injury (MCL 324.80176)" fine_k="5" probation_chance="10" min_years="0" max_years="5"/>
+		<Charge name="Operating a Motorboat Under the Influence, Causing Death (MCL 324.80176)" fine_k="10" probation_chance="0" min_years="0" max_years="15"/>
+		<Charge name="Reckless Operation of a Vessel (MCL 324.80147)" fine="500" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Leaving the Scene of a Boating Accident (MCL 324.80159)" fine_k="1" probation_chance="50" min_months="0" max_months="6"/>
+		<Charge name="Leaving the Scene of a Boating Accident Causing Death (MCL 324.80159)" fine_k="10" probation_chance="0" min_years="0" max_years="15"/>
+		<Charge name="Allowing an Intoxicated Person to Operate a Motorboat (MCL 324.80176(2))" fine="500" probation_chance="60" min_months="0" max_months="3"/>
+		<Charge name="Reckless Operation of a Personal Watercraft in a No-Wake or Restricted Zone" can_be_warrant="false" fine="500" probation_chance="80" min_months="0" max_months="1"/>
+		<Charge name="Interfering With Navigation / Illegal Anchoring in a Channel (MCL 324.80148)" can_be_warrant="false" fine="250" probation_chance="80"/>
+	</ChargeGroup>
+
+	<ChargeGroup name="Beach, Park &amp; Local Ordinance Violations">
+		<Charge name="Open Intoxicants / Consuming Alcohol on a Public Beach (Local Ordinance)" can_be_warrant="false" fine="300" probation_chance="80" min_months="0" max_months="1"/>
+		<Charge name="Swimming After Posted Hours / Beach Closure Violation (Local Ordinance)" can_be_warrant="false" fine="250" probation_chance="80" min_months="0" max_months="1"/>
+		<Charge name="Unauthorized Bonfire / Open Burning on a Beach or in a Park (Local Fire Ordinance)" can_be_warrant="false" fine="500" probation_chance="80" min_months="0" max_months="1"/>
+		<Charge name="Disorderly Conduct at a Public Beach or Park (MCL 750.167)" can_be_warrant="false" fine="500" probation_chance="70" min_months="0" max_months="3"/>
+		<Charge name="Glass Containers Prohibited on a Public Beach (Local Ordinance)" can_be_warrant="false" fine="150" probation_chance="90"/>
+		<Charge name="Dog Off-Leash in a Restricted Beach or Park Area (Local Ordinance)" can_be_warrant="false" fine="150" probation_chance="90"/>
+		<Charge name="Noise Ordinance Violation (Local Ordinance)" can_be_warrant="false" fine="250" probation_chance="90"/>
+		<Charge name="Curfew Violation, Minor (Local Ordinance)" can_be_warrant="false" fine="150" probation_chance="90"/>
+		<Charge name="Unlicensed or Unregistered Dog (MCL 287.262)" can_be_warrant="false" fine="100" probation_chance="90"/>
+		<Charge name="Dog Bite Causing Injury, Owner Liability (MCL 287.323)" can_be_warrant="false" fine="500" probation_chance="60" min_months="0" max_months="1"/>
+		<Charge name="Dog Bite Causing Serious Injury or Death, Owner Liability (MCL 287.323)" fine_k="2" probation_chance="30" min_years="0" max_years="4"/>
+		<Charge name="Metal Detecting or Removing Natural Features in a Prohibited State Park Area (DNR/Local Order)" can_be_warrant="false" fine="250" probation_chance="90"/>
+		<Charge name="Aggressive Panhandling / Solicitation Ordinance Violation" can_be_warrant="false" fine="250" probation_chance="90"/>
+	</ChargeGroup>
+
+</CompuLiteCharges>

@@ -260,16 +260,18 @@ function wireChargeCard(card) {
   search.addEventListener("input", () => {
     const t = search.value.trim().toLowerCase();
     if (!t) { suggest.style.display = "none"; return; }
-    const matches = chargeCodesCache.filter(c => c.name.toLowerCase().includes(t) || (c.statute || "").toLowerCase().includes(t)).slice(0, 6);
+    const matches = chargeCodesCache.filter(c => c.name.toLowerCase().includes(t) || (c.statute || "").toLowerCase().includes(t)).slice(0, 8);
     if (!matches.length) { suggest.style.display = "none"; return; }
     suggest.style.display = "";
-    suggest.innerHTML = matches.map((c, i) => `<div class="suggest-item" data-i="${i}">${esc(c.name)}<div class="si-sub">${esc(c.statute)} &middot; ${esc(c.classification)}</div></div>`).join("");
+    suggest.innerHTML = matches.map((c, i) => `<div class="suggest-item" data-i="${i}">${esc(c.name)}<div class="si-sub">${esc(c.statute)} &middot; ${esc(c.classification)} &middot; ${esc(c.category || "")}</div><div class="si-sub">${esc(c.exposure || "")}</div></div>`).join("");
     suggest.querySelectorAll(".suggest-item").forEach(el => el.addEventListener("click", () => {
       const c = matches[el.dataset.i];
       card.dataset.chargeName = c.name;
       search.value = c.name;
       card.querySelector('[data-field="statute"]').value = c.statute;
       card.querySelector('[data-field="classification"]').value = c.classification;
+      const punishmentField = card.querySelector('[data-field="punishment"]');
+      if (punishmentField && !punishmentField.value) punishmentField.value = c.exposure || "";
       suggest.style.display = "none";
     }));
   });

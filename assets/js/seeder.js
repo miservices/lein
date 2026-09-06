@@ -10,8 +10,7 @@ import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/fi
 import { generateCaseId } from "./util.js";
 import {
   seedUnits, seedGroups, seedPeople, seedVehicles, seedCalls,
-  seedReports, seedCitations, seedBolos, seedRecords,
-  seedChargeCodes, seedCitationCodes
+  seedReports, seedCitations, seedBolos, seedRecords
 } from "./seed-data.js";
 
 const usedIds = new Set();
@@ -123,17 +122,6 @@ export async function bootstrapMockData() {
     }
 
     await setDoc(metaRef, { seededAt: serverTimestamp(), version: 1 });
-
-    // Reference data (charge codes, citation codes) isn't roleplay filler —
-    // it's real statute data the forms depend on — so it's written as
-    // isMock:false directly, without going through put()'s isMock:true tag.
-    for (const c of seedChargeCodes) {
-      await setDoc(doc(db, "chargeCodes", caseId()), { ...c, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
-    }
-    for (const c of seedCitationCodes) {
-      await setDoc(doc(db, "citationCodes", caseId()), { ...c, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
-    }
-
     console.info("[LEIN] Mock dataset seeded into Firestore.");
   } catch (err) {
     console.warn("[LEIN] Seeding failed partway through — will retry next load.", err);

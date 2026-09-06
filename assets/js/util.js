@@ -117,7 +117,7 @@ export const COURT_JUDGES = [
   "Hon. S. Ibarra", "Hon. C. Lindqvist", "Hon. J. Marsh", "Hon. T. Okafor"
 ];
 export const COURTS = [
-  "Genesee County 67th District Court", "Genesee County Circuit Court", "Flint Municipal Court"
+  "Genesee County 67th District Court", "Genesee County 7th Circuit Court"
 ];
 
 // ---------------------------------------------------------
